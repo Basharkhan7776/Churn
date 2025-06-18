@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env bun
 
 import { promptUser } from './src/prompts';
 import { scaffoldProject } from './src/scaffold';

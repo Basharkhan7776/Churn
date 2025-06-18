@@ -39,7 +39,7 @@ export function showSuccess(options: ProjectOptions) {
   }
 
   console.log(chalk.blue('📚 Documentation:'));
-  console.log(chalk.white('   https://github.com/your-org/churn'));
+  console.log(chalk.white('   https://github.com/Basharkhan7776/Churn'));
   console.log();
 }
 
