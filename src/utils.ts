@@ -4,9 +4,9 @@ import type { ProjectOptions } from './types';
 export function showWelcome() {
   console.log(chalk.bold.blue(`
 ╔══════════════════════════════════════════════════════════════╗
-║                    🚀 Create Churn CLI                      ║
+║                    🚀 Create Churn CLI                       ║
 ║                                                              ║
-║  Create customizable backend projects with ease!            ║
+║  Create customizable backend projects with ease!             ║
 ╚══════════════════════════════════════════════════════════════╝
   `));
 }
