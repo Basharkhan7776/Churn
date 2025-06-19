@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, mock } from 'bun:test';
-import type { ProjectOptions } from './types';
+import type { ProjectOptions } from '../src/types';
 
 // Mock fs-extra before importing
 const mockFs = {
@@ -19,7 +19,7 @@ mock.module('child_process', () => ({
 }));
 
 // Import after mocking
-import { scaffoldProject } from './scaffold';
+import { scaffoldProject } from '../src/scaffold';
 
 describe('scaffoldProject', () => {
   let originalConsoleLog: typeof console.log;

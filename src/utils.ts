@@ -4,9 +4,9 @@ import type { ProjectOptions } from './types';
 export function showWelcome() {
   console.log(chalk.bold.blue(`
 ╔══════════════════════════════════════════════════════════════╗
-║                    🚀 Create Churn CLI                       ║
+║                    Create Churn CLI                          ║
 ║                                                              ║
-║  Create customizable backend projects with ease!             ║
+║     Create customizable backend projects with ease!          ║
 ╚══════════════════════════════════════════════════════════════╝
   `));
 }
@@ -25,7 +25,7 @@ export function showSuccess(options: ProjectOptions) {
   console.log(chalk.gray(`   ${options.targetDir}/`));
   console.log();
 
-  console.log(chalk.blue('🚀 Next steps:'));
+  console.log(chalk.blue('➡️  Next steps:'));
   console.log(chalk.white(`   1. cd ${options.projectName}`));
   console.log(chalk.white(`   2. ${getInstallCommand(options.packageManager)}`));
   console.log(chalk.white(`   3. ${getStartCommand(options.packageManager)}`));

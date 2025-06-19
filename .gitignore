@@ -29,6 +29,11 @@ _.seed
 
 lib-cov
 
+# "new" test dir
+
+new
+
+
 # Coverage directory used by tools like istanbul
 
 coverage

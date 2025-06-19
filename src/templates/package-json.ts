@@ -113,6 +113,22 @@ export function generatePackageJson(options: ProjectOptions): any {
     };
   }
 
+  // Add @types for express/cors/ws if using TypeScript
+  if (language === 'ts') {
+    if (protocol === 'http') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/express": "^4.17.21",
+        "@types/cors": "^2.8.17"
+      };
+    } else if (protocol === 'ws') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/ws": "^8.5.10"
+      };
+    }
+  }
+
   // Add ORM dependencies
   if (orm === 'prisma') {
     basePackage.dependencies = {

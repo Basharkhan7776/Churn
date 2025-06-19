@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'bun:test';
-import { generatePackageJson } from './package-json';
-import type { ProjectOptions } from '../types';
+import { generatePackageJson } from '../src/templates/package-json';
+import type { ProjectOptions } from '../src/types';
 
 describe('generatePackageJson', () => {
   const baseOptions: ProjectOptions = {
@@ -167,5 +167,16 @@ describe('generatePackageJson', () => {
     const result = generatePackageJson(jsOptions);
     
     expect(result.description).toContain('JavaScript');
+  });
+
+  it('should include @types/express and @types/cors in devDependencies when using TypeScript and HTTP', () => {
+    const result = generatePackageJson({ ...baseOptions, language: 'ts', protocol: 'http' });
+    expect(result.devDependencies).toHaveProperty('@types/express');
+    expect(result.devDependencies).toHaveProperty('@types/cors');
+  });
+
+  it('should include @types/ws in devDependencies when using TypeScript and WebSocket', () => {
+    const result = generatePackageJson({ ...baseOptions, language: 'ts', protocol: 'ws' });
+    expect(result.devDependencies).toHaveProperty('@types/ws');
   });
 }); 

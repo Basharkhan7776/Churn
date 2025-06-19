@@ -1,6 +1,6 @@
 {
   "name": "create-churn",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CLI tool to create customizable churn backend projects",
   "main": "dist/index.js",
   "bin": {

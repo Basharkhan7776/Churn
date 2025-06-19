@@ -1,14 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, mock } from 'bun:test';
-import type { ProjectOptions } from './types';
+import { promptUser } from '../src/prompts';
+import type { ProjectOptions } from '../src/types';
 
-// Mock the prompts module before importing
+// Mock the prompts package
 const mockPrompts = mock(() => Promise.resolve({}));
 mock.module('prompts', () => ({
   default: mockPrompts
 }));
-
-// Import after mocking
-import { promptUser } from './prompts';
 
 describe('promptUser', () => {
   let originalConsoleLog: typeof console.log;

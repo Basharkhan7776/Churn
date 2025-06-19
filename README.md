@@ -1,6 +1,6 @@
 # Create Churn CLI
 
-> 🚀 Scaffold customizable backend projects with ease
+> ➡️ Scaffold customizable backend projects with ease
 
 A powerful CLI tool to create fully configured backend projects with your preferred settings. Similar to `create-next-app`, but for backend development.
 

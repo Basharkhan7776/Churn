@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import { showWelcome, showSuccess } from './utils';
-import type { ProjectOptions } from './types';
+import { showWelcome, showSuccess } from '../src/utils';
+import type { ProjectOptions } from '../src/types';
 
 describe('utils', () => {
   let originalConsoleLog: typeof console.log;
@@ -28,13 +28,10 @@ describe('utils', () => {
       expect(output).toContain('Create customizable backend projects');
     });
 
-    it('should include emoji and formatting', () => {
+    it('should include main title in welcome message', () => {
       showWelcome();
-      
       const output = consoleOutput.join(' ');
-      expect(output).toContain('🚀');
-      expect(output).toContain('╔');
-      expect(output).toContain('╗');
+      expect(output).toContain('Create Churn CLI');
     });
   });
 
@@ -155,10 +152,9 @@ describe('utils', () => {
 
     it('should show documentation link', () => {
       showSuccess(mockOptions);
-      
       const output = consoleOutput.join(' ');
       expect(output).toContain('Documentation:');
-      expect(output).toContain('https://github.com/your-org/churn');
+      expect(output).toContain('https://github.com/Basharkhan7776/Churn');
     });
   });
 }); 

@@ -9,7 +9,7 @@ import { generateTsConfig } from './templates/tsconfig';
 import { generatePrismaSchema } from './templates/prisma-schema';
 
 export async function scaffoldProject(options: ProjectOptions): Promise<void> {
-  console.log(chalk.blue('🚀 Creating your project...\n'));
+  console.log(chalk.blue('➡️ Creating your project...\n'));
 
   // Create project directory
   await createProjectDirectory(options.targetDir);
@@ -293,7 +293,7 @@ ${orm === 'prisma' ? '└── prisma/                    # Database schema and
 
 ## Learn More
 
-- [Churn Documentation](https://github.com/your-org/churn)
+- [Churn Documentation](https://github.com/Basharkhan7776/Churn)
 - [${language === 'ts' ? 'TypeScript' : 'JavaScript'} Documentation](https://${language === 'ts' ? 'www.typescriptlang.org' : 'developer.mozilla.org/en-US/docs/Web/JavaScript'})
 ${orm === 'prisma' ? '- [Prisma Documentation](https://www.prisma.io/docs)' : ''}
 `;

@@ -3,7 +3,7 @@ import type { ProjectOptions } from './types';
 import chalk from 'chalk';
 
 export async function promptUser(): Promise<ProjectOptions | null> {
-  console.log(chalk.blue('Let\'s create your Churn backend project! 🚀\n'));
+  console.log(chalk.blue('Let\'s create your Churn backend project! \n'));
 
   const response = await prompts([
     {
