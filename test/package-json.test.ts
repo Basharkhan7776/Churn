@@ -23,7 +23,11 @@ describe('generatePackageJson', () => {
     const result = generatePackageJson(baseOptions);
     
     expect(result.devDependencies).toHaveProperty('typescript');
-    expect(result.devDependencies).toHaveProperty('@types/bun');
+    if (baseOptions.packageManager === 'bun') {
+      expect(result.devDependencies).toHaveProperty('bun-types');
+    } else {
+      expect(result.devDependencies).toHaveProperty('@types/bun');
+    }
   });
 
   it('should not include TypeScript dependencies when language is js', () => {
