@@ -179,4 +179,22 @@ describe('generatePackageJson', () => {
     const result = generatePackageJson({ ...baseOptions, language: 'ts', protocol: 'ws' });
     expect(result.devDependencies).toHaveProperty('@types/ws');
   });
+
+  it('should set rootDir to src and outDir to dist in build script for yarn', () => {
+    const yarnOptions = { ...baseOptions, packageManager: 'yarn' as const };
+    const result = generatePackageJson(yarnOptions);
+    expect(result.scripts.build).toContain('--rootDir src --outDir dist');
+  });
+
+  it('should set rootDir to src and outDir to dist in build script for pnpm', () => {
+    const pnpmOptions = { ...baseOptions, packageManager: 'pnpm' as const };
+    const result = generatePackageJson(pnpmOptions);
+    expect(result.scripts.build).toContain('--rootDir src --outDir dist');
+  });
+
+  it('should set rootDir to src and outDir to dist in build script for npm', () => {
+    const npmOptions = { ...baseOptions, packageManager: 'npm' as const };
+    const result = generatePackageJson(npmOptions);
+    expect(result.scripts.build).toContain('--rootDir src --outDir dist');
+  });
 }); 

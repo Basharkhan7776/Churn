@@ -16,25 +16,25 @@ export function generatePackageJson(options: ProjectOptions): any {
         };
       case 'yarn':
         return {
-          dev: language === 'ts' ? 'yarn tsx watch index.ts' : 'yarn node --watch index.js',
-          build: language === 'ts' ? 'yarn tsc && yarn tsc-alias' : 'echo "No build needed for JavaScript"',
-          start: language === 'ts' ? 'yarn node dist/index.js' : 'yarn node index.js',
+          dev: language === 'ts' ? 'yarn tsx watch index.ts' : 'node --watch index.js',
+          build: language === 'ts' ? 'yarn tsc --rootDir src --outDir dist && yarn tsc-alias -p tsconfig.json' : 'echo "No build needed for JavaScript"',
+          start: language === 'ts' ? 'yarn node dist/index.js' : 'node index.js',
           test: 'yarn test',
           install: 'yarn install'
         };
       case 'pnpm':
         return {
-          dev: language === 'ts' ? 'pnpm tsx watch index.ts' : 'pnpm node --watch index.js',
-          build: language === 'ts' ? 'pnpm tsc && pnpm tsc-alias' : 'echo "No build needed for JavaScript"',
-          start: language === 'ts' ? 'pnpm node dist/index.js' : 'pnpm node index.js',
+          dev: language === 'ts' ? 'pnpm tsx watch index.ts' : 'node --watch index.js',
+          build: language === 'ts' ? 'pnpm tsc --rootDir src --outDir dist && pnpm tsc-alias -p tsconfig.json' : 'echo "No build needed for JavaScript"',
+          start: language === 'ts' ? 'pnpm node dist/index.js' : 'node index.js',
           test: 'pnpm test',
           install: 'pnpm install'
         };
       case 'npm':
         return {
-          dev: language === 'ts' ? 'npm run tsx watch index.ts' : 'npm run node --watch index.js',
-          build: language === 'ts' ? 'npm run tsc && npm run tsc-alias' : 'echo "No build needed for JavaScript"',
-          start: language === 'ts' ? 'npm run node dist/index.js' : 'npm run node index.js',
+          dev: language === 'ts' ? 'npm run tsx watch index.ts' : 'node --watch index.js',
+          build: language === 'ts' ? 'npm run tsc -- --rootDir src --outDir dist && npm run tsc-alias -p tsconfig.json' : 'echo "No build needed for JavaScript"',
+          start: language === 'ts' ? 'npm run node dist/index.js' : 'node index.js',
           test: 'npm test',
           install: 'npm install'
         };
@@ -154,12 +154,11 @@ export function generatePackageJson(options: ProjectOptions): any {
       ...basePackage.devDependencies,
       "tsc-alias": "^1.8.0"
     };
-    
     // Update build script to include path alias processing
     if (packageManager === 'bun') {
       basePackage.scripts.build = "bun build index.ts --outdir ./dist --target node && tsc-alias -p tsconfig.json";
     } else {
-      basePackage.scripts.build = "tsc && tsc-alias -p tsconfig.json";
+      basePackage.scripts.build = "tsc --rootDir src --outDir dist && tsc-alias -p tsconfig.json";
     }
   }
 
