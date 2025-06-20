@@ -32,7 +32,7 @@ export function generatePackageJson(options: ProjectOptions): any {
         };
       case 'npm':
         return {
-          dev: language === 'ts' ? 'npm run tsx watch index.ts' : 'node --watch index.js',
+          dev: language === 'ts' ? 'tsx watch index.ts' : 'node --watch index.js',
           build: language === 'ts' ? 'npm run tsc -- --rootDir src --outDir dist && npm run tsc-alias -p tsconfig.json' : 'echo "No build needed for JavaScript"',
           start: language === 'ts' ? 'npm run node dist/index.js' : 'node index.js',
           test: 'npm test',
@@ -58,9 +58,9 @@ export function generatePackageJson(options: ProjectOptions): any {
     main: language === 'ts' ? 'dist/index.js' : 'index.js',
     type: "module",
     scripts: {
-      dev: commands.dev,
+      dev: language === 'ts' ? (packageManager === 'bun' ? 'bun run --watch src/index.ts' : packageManager === 'yarn' ? 'yarn tsx watch src/index.ts' : packageManager === 'pnpm' ? 'pnpm tsx watch src/index.ts' : 'tsx watch src/index.ts') : (packageManager === 'bun' ? 'bun --watch index.js' : 'node --watch index.js'),
       build: commands.build,
-      start: commands.start,
+      start: language === 'ts' ? (packageManager === 'bun' ? 'bun run src/index.ts' : packageManager === 'yarn' ? 'yarn node dist/index.js' : packageManager === 'pnpm' ? 'pnpm node dist/index.js' : 'node dist/index.js') : (packageManager === 'bun' ? 'bun index.js' : 'node index.js'),
       test: commands.test
     },
     dependencies: {},

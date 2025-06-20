@@ -8,8 +8,6 @@ export function generateTsConfig(options: ProjectOptions): any {
       "target": "ES2022",
       "module": "ESNext",
       "moduleResolution": "bundler",
-      "allowImportingTsExtensions": true,
-      "noEmit": true,
       "allowJs": true,
       "strict": true,
       "noUnusedLocals": true,
@@ -22,7 +20,8 @@ export function generateTsConfig(options: ProjectOptions): any {
       "resolveJsonModule": true,
       "isolatedModules": true,
       "verbatimModuleSyntax": true,
-      "types": ["bun-types"]
+      "types": ["bun-types"],
+      "outDir": "dist"
     },
     "include": [
       "**/*.ts",

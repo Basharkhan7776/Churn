@@ -43,9 +43,19 @@ async function generateProjectFiles(options: ProjectOptions): Promise<void> {
 
     // Generate main file
     const mainFile = generateMainFile(options);
-    const mainFileName = language === 'ts' ? 'index.ts' : 'index.js';
-    await fs.writeFile(path.join(targetDir, mainFileName), mainFile);
-    console.log(chalk.gray(`📄 Generated ${mainFileName}`));
+    let mainFileName: string;
+    let mainFilePath: string;
+    if (language === 'ts') {
+      mainFileName = 'index.ts';
+      const srcDir = path.join(targetDir, 'src');
+      await fs.ensureDir(srcDir);
+      mainFilePath = path.join(srcDir, mainFileName);
+    } else {
+      mainFileName = 'index.js';
+      mainFilePath = path.join(targetDir, mainFileName);
+    }
+    await fs.writeFile(mainFilePath, mainFile);
+    console.log(chalk.gray(`📄 Generated ${language === 'ts' ? 'src/' : ''}${mainFileName}`));
 
     // Generate TypeScript config if using TypeScript
     if (language === 'ts') {

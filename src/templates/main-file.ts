@@ -28,11 +28,11 @@ function generateTypeScriptMain(options: ProjectOptions): string {
     setupCode += `app.use(express.json());\n\n`;
     mainCode += `
 // Routes
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.json({ message: 'Hello from Churn!' });
 });
 
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -67,10 +67,12 @@ console.log(' WebSocket server running on ws://localhost:3000');`;
     
     if (protocol === 'http') {
       mainCode = mainCode.replace(
-        'app.get(\'/health\', (req, res) => {',
-        `app.get('/health', async (req, res) => {
+        `app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});`,
+        `app.get('/health', async (_req, res) => {
   try {
-    await prisma.\$queryRaw\`SELECT 1\`;
+    await prisma.$queryRaw\`SELECT 1\`;
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   } catch (error) {
     res.status(500).json({ status: 'error', message: 'Database connection failed' });
@@ -143,13 +145,12 @@ console.log(' WebSocket server running on ws://localhost:3000');`;
   if (orm === 'prisma') {
     imports += `import { PrismaClient } from '@prisma/client';\n`;
     setupCode += `const prisma = new PrismaClient();\n\n`;
-    
     if (protocol === 'http') {
       mainCode = mainCode.replace(
-        'app.get(\'/health\', (req, res) => {',
+        "app.get('/health', (req, res) => {\n  res.json({ status: 'ok', timestamp: new Date().toISOString() });\n});",
         `app.get('/health', async (req, res) => {
   try {
-    await prisma.\$queryRaw\`SELECT 1\`;
+    await prisma.$queryRaw\`SELECT 1\`;
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   } catch (error) {
     res.status(500).json({ status: 'error', message: 'Database connection failed' });
