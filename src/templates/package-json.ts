@@ -94,7 +94,7 @@ export function generatePackageJson(options: ProjectOptions): any {
     } else {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/bun": "latest"
+        "bun-types": "latest"
       };
     }
   }
