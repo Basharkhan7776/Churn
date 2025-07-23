@@ -1,4 +1,3 @@
-
 # Create Churn CLI Documentation
 
 ## Table of Contents
@@ -7,15 +6,13 @@
 - [Features](#features)
 - [Technologies Used](#technologies-used)
 - [Project Structure](#project-structure)
-- [Core Logic](#core-logic)
-  - [1. User Prompts](#1-user-prompts)
-  - [2. Project Scaffolding](#2-project-scaffolding)
-  - [3. Template Generation](#3-template-generation)
-- [Code Snippets](#code-snippets)
+- [Workflow and Core Logic](#workflow-and-core-logic)
+- [Detailed File Generation](#detailed-file-generation)
   - [Main File Generation](#main-file-generation)
   - [Package.json Generation](#packagejson-generation)
   - [Prisma Schema Generation](#prisma-schema-generation)
   - [tsconfig.json Generation](#tsconfigjson-generation)
+- [The Generated Project](#the-generated-project)
 - [How to Use](#how-to-use)
 - [Development](#development)
 
@@ -34,16 +31,15 @@
 
 ## Technologies Used
 
-- **[TypeScript](https://www.typescriptlang.org/)**: The primary language for the CLI and generated projects.
-- **[Node.js](https://nodejs.org/)**: The runtime environment for the CLI.
-- **[Bun](https://bun.sh/)**: Used as a package manager and for building the project.
-- **[prompts](https://github.com/terkelg/prompts)**: For creating interactive command-line prompts.
-- **[chalk](https://github.com/chalk/chalk)**: For styling the command-line output.
-- **[fs-extra](https://github.com/jprichardson/fs-extra)**: For file system operations.
-- **[ejs](https://ejs.co/)**: (Not directly used in the provided files, but listed in `package.json`) A templating engine.
-- **[Prisma](https://www.prisma.io/)**: An open-source database toolkit.
-- **[Express](https://expressjs.com/)**: A web application framework for Node.js (for HTTP protocol).
-- **[ws](https://github.com/websockets/ws)**: A WebSocket library for Node.js (for WebSocket protocol).
+- **[Node.js](https://nodejs.org/)**: The JavaScript runtime used to execute the CLI.
+- **[TypeScript](https://www.typescriptlang.org/)**: For static typing, improving code quality and maintainability.
+- **[Bun](https://bun.sh/)**: A fast all-in-one JavaScript toolkit used for package management, running scripts, and bundling the final executable.
+- **[prompts](https://github.com/terkelg/prompts)**: A lightweight and user-friendly library for creating interactive command-line prompts to gather user requirements.
+- **[chalk](https://github.com/chalk/chalk)**: Used to add color and styling to the terminal output, improving readability.
+- **[fs-extra](https://github.com/jprichardson/fs-extra)**: A module that adds file system methods that aren't included in the native `fs` module, like `ensureDir` and `writeJson`, simplifying file operations.
+- **[Prisma](https://www.prisma.io/)**: A next-generation ORM for Node.js and TypeScript. It's offered as an option for database integration.
+- **[Express](https://expressjs.com/)**: A minimal and flexible Node.js web application framework, used when the user selects the HTTP protocol.
+- **[ws](https://github.com/websockets/ws)**: A high-performance WebSocket implementation, used when the user selects the WebSocket protocol.
 
 ## Project Structure
 
@@ -52,52 +48,35 @@ The project is organized as follows:
 ```
 .
 ├── src/
-│   ├── prompts.ts        # Handles user input through interactive prompts
-│   ├── scaffold.ts       # Core logic for creating the project structure and files
-│   ├── types.ts          # TypeScript type definitions
-│   ├── utils.ts          # Utility functions (e.g., for displaying messages)
+│   ├── prompts.ts        # Handles user input through interactive prompts.
+│   ├── scaffold.ts       # Core logic for creating the project structure and files.
+│   ├── types.ts          # TypeScript type definitions, primarily the ProjectOptions interface.
+│   ├── utils.ts          # Utility functions for displaying formatted messages (e.g., welcome/success banners).
 │   └── templates/
-│       ├── main-file.ts      # Generates the main entry file (index.ts or index.js)
-│       ├── package-json.ts   # Generates the package.json file
-│       ├── prisma-schema.ts  # Generates the Prisma schema file
-│       └── tsconfig.ts       # Generates the tsconfig.json file
+│       ├── main-file.ts      # Generates the main entry file (index.ts or index.js).
+│       ├── package-json.ts   # Generates the package.json file.
+│       ├── prisma-schema.ts  # Generates the Prisma schema file.
+│       └── tsconfig.ts       # Generates the tsconfig.json file.
 ├── test/
-│   └── ...               # Test files for the project
-├── package.json          # Project dependencies and scripts
-└── tsconfig.json         # TypeScript configuration
+│   └── ...               # Test files for the project.
+├── package.json          # Project dependencies and scripts.
+└── tsconfig.json         # TypeScript configuration for the CLI tool itself.
 ```
 
-## Core Logic
+## Workflow and Core Logic
 
-The core logic of the CLI can be broken down into three main parts:
+The CLI operates in a straightforward sequence:
 
-### 1. User Prompts
+1.  **Initialization**: The `index.ts` file is the entry point. It calls `showWelcome()` to display a banner and then invokes `promptUser()`.
+2.  **User Configuration**: The `promptUser` function in `src/prompts.ts` displays a series of questions. The answers are collected into a `ProjectOptions` object. If the user cancels, the process exits.
+3.  **Scaffolding**: The `ProjectOptions` object is passed to the `scaffoldProject` function in `src/scaffold.ts`.
+4.  **File Creation**: `scaffoldProject` creates the main project directory. It then calls the various `generate...` functions from the `src/templates` directory, passing the `options` object to each.
+5.  **Dynamic Content Generation**: Each template function (`generateMainFile`, `generatePackageJson`, etc.) uses the properties of the `options` object to conditionally include code, dependencies, and scripts. For example, if `options.orm === 'prisma'`, Prisma-related dependencies and scripts are added to `package.json`.
+6.  **Writing to Disk**: The generated content is written to the corresponding files within the new project directory using `fs-extra`.
+7.  **Dependency Installation**: `scaffoldProject` changes the current working directory to the new project's root and runs the appropriate install command (`bun install`, `npm install`, etc.).
+8.  **Completion**: Finally, the `showSuccess` function is called to inform the user that the project is ready and provide the next steps.
 
-- The `promptUser` function in `src/prompts.ts` is responsible for asking the user a series of questions to determine the project's configuration.
-- It uses the `prompts` library to create interactive prompts for:
-  - Project name
-  - Language (TypeScript/JavaScript)
-  - Package manager (Bun/Yarn/pnpm/npm)
-  - Protocol (HTTP/WebSocket)
-  - ORM (None/Prisma)
-  - Path aliases (Yes/No)
-- The user's selections are returned as a `ProjectOptions` object.
-
-### 2. Project Scaffolding
-
-- The `scaffoldProject` function in `src/scaffold.ts` orchestrates the project creation process.
-- It performs the following steps:
-  1.  **Creates the project directory**: Based on the user-provided project name.
-  2.  **Generates project files**: Calls functions from the `src/templates` directory to create `package.json`, the main entry file, `tsconfig.json` (if applicable), and `prisma/schema.prisma` (if applicable).
-  3.  **Initializes the package manager**: Runs the appropriate installation command (`bun install`, `yarn install`, etc.) in the newly created project directory.
-
-### 3. Template Generation
-
-- The `src/templates` directory contains functions that generate the content of the project files based on the user's selected options.
-- Each function takes the `ProjectOptions` object as input and returns a string or JSON object representing the file's content.
-- This approach allows for dynamic and customizable file generation.
-
-## Code Snippets
+## Detailed File Generation
 
 Here are some key code snippets that illustrate the template generation logic:
 
@@ -107,27 +86,20 @@ The `generateMainFile` function in `src/templates/main-file.ts` generates the ma
 
 ```typescript
 // src/templates/main-file.ts
-
 export function generateMainFile(options: ProjectOptions): string {
-  const { language, protocol, orm, aliases } = options;
-
-  if (language === 'ts') {
-    return generateTypeScriptMain(options);
-  } else {
-    return generateJavaScriptMain(options);
+  // ...
+  if (protocol === 'http') {
+    imports += `import express from 'express';\n`;
+    // ...
+  } else if (protocol === 'ws') {
+    imports += `import { WebSocketServer } from 'ws';\n`;
+    // ...
   }
-}
-
-function generateTypeScriptMain(options: ProjectOptions): string {
-  const { protocol, orm, aliases } = options;
-
-  let imports = '';
-  let setupCode = '';
-  let mainCode = '';
-
-  // ... (logic to add imports, setup code, and main code based on options)
-
-  return `${imports}\n${setupCode}${mainCode}`;
+  if (orm === 'prisma') {
+    imports += `import { PrismaClient } from '@prisma/client';\n`;
+    // ...
+  }
+  // ...
 }
 ```
 
@@ -137,19 +109,19 @@ The `generatePackageJson` function in `src/templates/package-json.ts` creates th
 
 ```typescript
 // src/templates/package-json.ts
-
 export function generatePackageJson(options: ProjectOptions): any {
-  const { projectName, language, packageManager, protocol, orm, aliases } = options;
-
-  const basePackage: any = {
-    name: projectName,
-    version: "1.0.0",
-    // ... (base package.json structure)
-  };
-
-  // ... (logic to add dependencies and scripts based on options)
-
-  return basePackage;
+  // ...
+  if (language === 'ts') {
+    basePackage.devDependencies["typescript"] = "^5.0.0";
+  }
+  if (protocol === 'http') {
+    basePackage.dependencies["express"] = "^4.18.0";
+  }
+  if (orm === 'prisma') {
+    basePackage.dependencies["@prisma/client"] = "^5.0.0";
+    basePackage.devDependencies["prisma"] = "^5.0.0";
+  }
+  // ...
 }
 ```
 
@@ -159,21 +131,16 @@ The `generatePrismaSchema` function in `src/templates/prisma-schema.ts` generate
 
 ```typescript
 // src/templates/prisma-schema.ts
-
 export function generatePrismaSchema(): string {
-  return `// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
+  return `// ...
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
-  provider = "postgresql" // or "mysql" or "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-// ... (example models)
+// ... example models
 `;
 }
 ```
@@ -184,28 +151,36 @@ The `generateTsConfig` function in `src/templates/tsconfig.ts` generates the `ts
 
 ```typescript
 // src/templates/tsconfig.ts
-
 export function generateTsConfig(options: ProjectOptions): any {
-  const { aliases } = options;
-
-  const baseConfig: any = {
-    "compilerOptions": {
-      // ... (base TypeScript compiler options)
-    },
-    // ... (include/exclude options)
-  };
-
+  // ...
   if (aliases) {
     baseConfig.compilerOptions.baseUrl = ".";
-    base.compilerOptions.paths = {
+    baseConfig.compilerOptions.paths = {
       "@/*": ["src/*"],
-      // ... (other path aliases)
+      // ...
     };
   }
-
   return baseConfig;
 }
 ```
+
+## The Generated Project
+
+After running `create-churn`, you will have a new directory with the following structure (example with TypeScript and Prisma):
+
+```
+my-churn-app/
+├── prisma/
+│   └── schema.prisma   # Prisma schema for database models
+├── src/
+│   └── index.ts        # Main application entry point
+├── .gitignore          # Git ignore file
+├── package.json        # Project dependencies and scripts
+├── README.md           # Project-specific README
+└── tsconfig.json       # TypeScript configuration
+```
+
+The generated `package.json` will contain scripts to run, build, and test the application, such as `dev`, `build`, and `start`.
 
 ## How to Use
 
