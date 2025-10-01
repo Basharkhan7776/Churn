@@ -15,8 +15,14 @@ jobs:
           bun-version: latest
       - name: Install dependencies
         run: bun install
-      - name: Run tests
-        run: bun test
+      - name: Build package
+        run: bun run build
+      - name: Run CLI tests
+        run: bun test-cli.ts
+      - name: Run deep validation
+        run: bun deep-test.ts
+      - name: Verify CORS feature
+        run: bun verify-cors.ts
 
   publish:
     needs: test
