@@ -11,7 +11,7 @@ export function generateMainFile(options: ProjectOptions): string {
 }
 
 function generateTypeScriptMain(options: ProjectOptions): string {
-  const { protocol, orm, aliases } = options;
+  const { protocol, orm, aliases, cors } = options;
 
   let imports = '';
   let setupCode = '';
@@ -20,11 +20,15 @@ function generateTypeScriptMain(options: ProjectOptions): string {
   // Add imports based on protocol
   if (protocol === 'http') {
     imports += `import express from 'express';\n`;
-    imports += `import cors from 'cors';\n`;
+    if (cors) {
+      imports += `import cors from 'cors';\n`;
+    }
     setupCode += `const app = express();\n`;
     setupCode += `const port = process.env.PORT || 3000;\n\n`;
     setupCode += `// Middleware\n`;
-    setupCode += `app.use(cors());\n`;
+    if (cors) {
+      setupCode += `app.use(cors());\n`;
+    }
     setupCode += `app.use(express.json());\n\n`;
     mainCode += `
 // Routes
@@ -92,7 +96,7 @@ ${setupCode}${mainCode}`;
 }
 
 function generateJavaScriptMain(options: ProjectOptions): string {
-  const { protocol, orm } = options;
+  const { protocol, orm, cors } = options;
 
   let imports = '';
   let setupCode = '';
@@ -101,11 +105,15 @@ function generateJavaScriptMain(options: ProjectOptions): string {
   // Add imports based on protocol
   if (protocol === 'http') {
     imports += `import express from 'express';\n`;
-    imports += `import cors from 'cors';\n`;
+    if (cors) {
+      imports += `import cors from 'cors';\n`;
+    }
     setupCode += `const app = express();\n`;
     setupCode += `const port = process.env.PORT || 3000;\n\n`;
     setupCode += `// Middleware\n`;
-    setupCode += `app.use(cors());\n`;
+    if (cors) {
+      setupCode += `app.use(cors());\n`;
+    }
     setupCode += `app.use(express.json());\n\n`;
     mainCode += `
 // Routes

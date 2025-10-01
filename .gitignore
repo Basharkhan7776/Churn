@@ -178,3 +178,6 @@ dist
 
 # Finder (MacOS) folder config
 .DS_Store
+
+# Project improvement tracking
+improvement.md

@@ -103,9 +103,16 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (protocol === 'http') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "express": "^4.18.0",
-      "cors": "^2.8.5"
+      "express": "^4.18.0"
     };
+
+    // Add CORS if enabled
+    if (options.cors) {
+      basePackage.dependencies = {
+        ...basePackage.dependencies,
+        "cors": "^2.8.5"
+      };
+    }
   } else if (protocol === 'ws') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
@@ -118,9 +125,15 @@ export function generatePackageJson(options: ProjectOptions): any {
     if (protocol === 'http') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/express": "^4.17.21",
-        "@types/cors": "^2.8.17"
+        "@types/express": "^4.17.21"
       };
+
+      if (options.cors) {
+        basePackage.devDependencies = {
+          ...basePackage.devDependencies,
+          "@types/cors": "^2.8.17"
+        };
+      }
     } else if (protocol === 'ws') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
@@ -145,6 +158,172 @@ export function generatePackageJson(options: ProjectOptions): any {
       "db:push": "prisma db push",
       "db:migrate": "prisma migrate dev",
       "db:studio": "prisma studio"
+    };
+  } else if (orm === 'drizzle') {
+    const dbDriver = options.database === 'postgresql' ? 'pg' :
+                     options.database === 'mysql' ? 'mysql2' : 'better-sqlite3';
+
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "drizzle-orm": "^0.29.0",
+      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^9.2.0'
+    };
+    basePackage.devDependencies = {
+      ...basePackage.devDependencies,
+      "drizzle-kit": "^0.20.0"
+    };
+    basePackage.scripts = {
+      ...basePackage.scripts,
+      "db:generate": "drizzle-kit generate:pg",
+      "db:push": "drizzle-kit push:pg",
+      "db:studio": "drizzle-kit studio"
+    };
+  } else if (orm === 'typeorm') {
+    const dbDriver = options.database === 'postgresql' ? 'pg' :
+                     options.database === 'mysql' ? 'mysql2' : 'better-sqlite3';
+
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "typeorm": "^0.3.17",
+      "reflect-metadata": "^0.1.13",
+      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^9.2.0'
+    };
+    basePackage.scripts = {
+      ...basePackage.scripts,
+      "db:migration:generate": "typeorm migration:generate",
+      "db:migration:run": "typeorm migration:run",
+      "db:migration:revert": "typeorm migration:revert"
+    };
+  } else if (orm === 'sequelize') {
+    const dbDriver = options.database === 'postgresql' ? 'pg' :
+                     options.database === 'mysql' ? 'mysql2' : 'sqlite3';
+
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "sequelize": "^6.35.0",
+      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^5.1.6'
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/sequelize": "^4.28.0"
+      };
+    }
+    basePackage.scripts = {
+      ...basePackage.scripts,
+      "db:migrate": "sequelize db:migrate",
+      "db:seed": "sequelize db:seed:all"
+    };
+  } else if (orm === 'mongoose') {
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "mongoose": "^8.0.0"
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/mongoose": "^5.11.97"
+      };
+    }
+  }
+
+  // Add environment validation
+  if (language === 'ts') {
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "zod": "^3.22.0"
+    };
+  }
+
+  // Add authentication dependencies
+  if (options.auth === 'jwt') {
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "jsonwebtoken": "^9.0.2"
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/jsonwebtoken": "^9.0.5"
+      };
+    }
+  } else if (options.auth === 'session') {
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "express-session": "^1.17.3"
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/express-session": "^1.17.10"
+      };
+    }
+  } else if (options.auth === 'oauth') {
+    basePackage.dependencies = {
+      ...basePackage.dependencies,
+      "axios": "^1.6.0"
+    };
+  }
+
+  // Add testing dependencies
+  if (options.testing === 'jest') {
+    basePackage.devDependencies = {
+      ...basePackage.devDependencies,
+      "jest": "^29.7.0",
+      "supertest": "^6.3.3"
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/jest": "^29.5.0",
+        "@types/supertest": "^6.0.0",
+        "ts-jest": "^29.1.0"
+      };
+    }
+    basePackage.scripts = {
+      ...basePackage.scripts,
+      "test:coverage": "jest --coverage"
+    };
+  } else if (options.testing === 'vitest') {
+    basePackage.devDependencies = {
+      ...basePackage.devDependencies,
+      "vitest": "^1.0.0",
+      "supertest": "^6.3.3",
+      "@vitest/coverage-v8": "^1.0.0"
+    };
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@types/supertest": "^6.0.0"
+      };
+    }
+  }
+
+  // Add linting dependencies
+  if (options.linting) {
+    basePackage.devDependencies = {
+      ...basePackage.devDependencies,
+      "eslint": "^8.55.0",
+      "prettier": "^3.1.0",
+      "eslint-plugin-prettier": "^5.0.1",
+      "eslint-config-prettier": "^9.1.0",
+      "lint-staged": "^15.2.0",
+      "husky": "^8.0.3"
+    };
+
+    if (language === 'ts') {
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "@typescript-eslint/parser": "^6.15.0",
+        "@typescript-eslint/eslint-plugin": "^6.15.0"
+      };
+    }
+
+    basePackage.scripts = {
+      ...basePackage.scripts,
+      "lint": `eslint ${language === 'ts' ? 'src/**/*.ts' : '**/*.js'} --fix`,
+      "format": "prettier --write .",
+      "prepare": "husky install"
     };
   }
 

@@ -3,10 +3,14 @@
 import { promptUser } from './src/prompts';
 import { scaffoldProject } from './src/scaffold';
 import { showWelcome, showSuccess } from './src/utils';
+import { startAnimation, stopAnimation } from './src/animation';
 import chalk from 'chalk';
 
 async function main() {
   try {
+    // Clear screen first
+    console.clear();
+
     // Show welcome message
     showWelcome();
 
