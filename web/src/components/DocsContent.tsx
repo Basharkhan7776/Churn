@@ -93,20 +93,59 @@ export function DocsContent() {
         </p>
         <CommandBlock command={`${baseCommand} my-api --prisma --jwt --docker --postgres`} />
 
-        <h1 id="flags" className="text-4xl font-bold mt-16 mb-6">Flags</h1>
-        
-        <div className="not-prose space-y-4">
+        <h1 id="flags" className="text-4xl font-bold mt-16 mb-6">CLI Flags</h1>
+
+        <p className="text-muted-foreground mb-6">
+          Click any flag to copy it to your clipboard:
+        </p>
+
+        <div className="not-prose space-y-6">
           {[
-            { flags: ['--prisma', '--drizzle', '--typeorm', '--sequelize', '--mongoose'], desc: 'ORM selection' },
-            { flags: ['--postgres', '--mysql', '--sqlite', '--mongodb'], desc: 'Database selection' },
-            { flags: ['--jwt', '--oauth', '--session'], desc: 'Authentication method' },
-            { flags: ['--docker'], desc: 'Include Docker configuration' },
-            { flags: ['--jest', '--vitest'], desc: 'Testing framework' },
-          ].map((item) => (
-            <div key={item.desc} className="flex flex-col gap-2">
-              <span className="text-sm text-muted-foreground">{item.desc}</span>
+            {
+              category: 'Language',
+              flags: ['--ts', '--typescript', '--js', '--javascript']
+            },
+            {
+              category: 'Package Manager',
+              flags: ['--bun', '--npm', '--yarn', '--pnpm']
+            },
+            {
+              category: 'Protocol',
+              flags: ['--http', '--ws', '--websocket', '--cors', '--no-cors']
+            },
+            {
+              category: 'ORM/ODM',
+              flags: ['--prisma', '--drizzle', '--typeorm', '--sequelize', '--mongoose', '--no-orm']
+            },
+            {
+              category: 'Database',
+              flags: ['--postgresql', '--postgres', '--mysql', '--sqlite', '--mongodb']
+            },
+            {
+              category: 'TypeScript Features',
+              flags: ['--aliases', '--no-aliases']
+            },
+            {
+              category: 'Authentication',
+              flags: ['--jwt', '--oauth', '--session', '--no-auth']
+            },
+            {
+              category: 'Testing',
+              flags: ['--jest', '--vitest', '--no-testing']
+            },
+            {
+              category: 'Code Quality',
+              flags: ['--linting', '--no-linting']
+            },
+            {
+              category: 'DevOps',
+              flags: ['--docker', '--no-docker', '--github', '--gitlab', '--circleci', '--no-cicd']
+            }
+          ].map((category) => (
+            <div key={category.category} className="space-y-3">
+              <h3 className="text-lg font-semibold">{category.category}</h3>
               <div className="flex flex-wrap gap-2">
-                {item.flags.map((flag) => (
+                {category.flags.map((flag) => (
                   <FlagBadge key={flag} flag={flag} />
                 ))}
               </div>
