@@ -89,71 +89,323 @@ my-project/
 
 ### Interactive Mode (Recommended)
 
+The easiest way to get started. The CLI will guide you through all configuration options:
+
 ```bash
 npx create-churn@latest
 ```
 
 You'll be prompted to configure:
 
-1. **Project name**
-2. **Language** (TypeScript or JavaScript)
-3. **Package manager** (Bun, npm, yarn, or pnpm)
-4. **Protocol** (HTTP or WebSocket)
-5. **CORS** (Enable/Disable for HTTP)
-6. **ORM/ODM** (Prisma, Drizzle, TypeORM, Sequelize, Mongoose, or None)
-7. **Database** (PostgreSQL, MySQL, SQLite, or MongoDB)
-8. **Path aliases** (TypeScript only)
-9. **Authentication** (JWT, OAuth, Session, or None)
-10. **Testing** (Jest, Vitest, or None)
-11. **Linting** (ESLint & Prettier)
-12. **Docker** (Dockerfile & docker-compose)
-13. **CI/CD** (GitHub Actions, GitLab CI, CircleCI, or None)
+1. **Project name** - Your project directory name
+2. **Language** - TypeScript or JavaScript
+3. **Package manager** - Bun, npm, yarn, or pnpm
+4. **Protocol** - HTTP (REST API) or WebSocket
+5. **CORS** - Enable/Disable (HTTP only)
+6. **ORM/ODM** - Prisma, Drizzle, TypeORM, Sequelize, Mongoose, or None
+7. **Database** - PostgreSQL, MySQL, SQLite, or MongoDB
+8. **Path aliases** - TypeScript path mapping (TS only)
+9. **Authentication** - JWT, OAuth, Session, or None
+10. **Testing** - Jest, Vitest, or None
+11. **Linting** - ESLint & Prettier with Husky
+12. **Docker** - Dockerfile & docker-compose
+13. **CI/CD** - GitHub Actions, GitLab CI, CircleCI, or None
 
-### Non-interactive Mode
+### Non-interactive Mode (CLI Flags)
 
-Coming soon in v1.2.0:
+> **Note:** Coming in v1.2.0. Skip prompts by providing configuration via flags:
 
 ```bash
-npx create-churn@latest my-project --typescript --bun --prisma --jwt --jest --docker
+npx create-churn@latest [project-name] [options]
 ```
+
+#### Basic Usage
+
+```bash
+# TypeScript + Bun + Prisma + PostgreSQL
+npx create-churn@latest my-app --ts --bun --prisma --postgresql
+
+# JavaScript + npm + MongoDB
+npx create-churn@latest my-api --js --npm --mongoose --mongodb
+
+# WebSocket server with testing
+npx create-churn@latest realtime-app --ws --vitest --docker
+```
+
+#### All Available Flags
+
+| Flag | Description | Options | Default |
+|------|-------------|---------|---------|
+| **Language** |
+| `--ts`, `--typescript` | Use TypeScript | - | ✓ Default |
+| `--js`, `--javascript` | Use JavaScript | - | |
+| **Package Manager** |
+| `--bun` | Use Bun | - | ✓ Default |
+| `--npm` | Use npm | - | |
+| `--yarn` | Use Yarn | - | |
+| `--pnpm` | Use pnpm | - | |
+| **Protocol** |
+| `--http` | HTTP/REST API | - | ✓ Default |
+| `--ws`, `--websocket` | WebSocket server | - | |
+| `--cors` | Enable CORS (HTTP only) | - | ✓ Default for HTTP |
+| `--no-cors` | Disable CORS | - | |
+| **ORM/ODM** |
+| `--prisma` | Use Prisma | - | ✓ Default |
+| `--drizzle` | Use Drizzle | - | |
+| `--typeorm` | Use TypeORM | - | |
+| `--sequelize` | Use Sequelize | - | |
+| `--mongoose` | Use Mongoose | - | |
+| `--no-orm` | Skip ORM setup | - | |
+| **Database** |
+| `--postgresql`, `--postgres` | PostgreSQL database | - | ✓ Default |
+| `--mysql` | MySQL database | - | |
+| `--sqlite` | SQLite database | - | |
+| `--mongodb` | MongoDB database | - | Auto with Mongoose |
+| **TypeScript Features** |
+| `--aliases` | Enable path aliases | - | ✓ Default for TS |
+| `--no-aliases` | Disable path aliases | - | |
+| **Authentication** |
+| `--jwt` | JWT authentication | - | |
+| `--oauth` | OAuth (Google, GitHub) | - | |
+| `--session` | Session-based auth | - | |
+| `--no-auth` | Skip authentication | - | ✓ Default |
+| **Testing** |
+| `--jest` | Use Jest | - | |
+| `--vitest` | Use Vitest | - | |
+| `--no-testing` | Skip testing setup | - | ✓ Default |
+| **Code Quality** |
+| `--linting` | ESLint + Prettier + Husky | - | ✓ Default |
+| `--no-linting` | Skip linting setup | - | |
+| **DevOps** |
+| `--docker` | Add Docker support | - | |
+| `--no-docker` | Skip Docker | - | ✓ Default |
+| `--github` | GitHub Actions CI/CD | - | |
+| `--gitlab` | GitLab CI | - | |
+| `--circleci` | CircleCI | - | |
+| `--no-cicd` | Skip CI/CD setup | - | ✓ Default |
+
+#### Flag Examples
+
+**Full-stack TypeScript API:**
+```bash
+npx create-churn@latest my-api \
+  --ts \
+  --bun \
+  --http \
+  --cors \
+  --drizzle \
+  --postgresql \
+  --aliases \
+  --jwt \
+  --jest \
+  --linting \
+  --docker \
+  --github
+```
+
+**Minimal JavaScript REST API:**
+```bash
+npx create-churn@latest simple-api --js --npm --http --no-orm --no-auth --no-testing --no-linting --no-docker
+```
+
+**WebSocket Server with MongoDB:**
+```bash
+npx create-churn@latest realtime-server --ts --bun --ws --mongoose --mongodb --session --vitest --docker
+```
+
+**Microservice with TypeORM:**
+```bash
+npx create-churn@latest user-service --ts --pnpm --http --typeorm --mysql --jwt --jest --linting --gitlab
+```
+
+#### Quick Reference - Common Combinations
+
+| Scenario | Command |
+|----------|---------|
+| **Default setup** | `npx create-churn@latest` |
+| **TypeScript only** | `npx create-churn@latest my-app --ts` |
+| **JavaScript only** | `npx create-churn@latest my-app --js` |
+| **With authentication** | `npx create-churn@latest my-app --jwt` |
+| **With testing** | `npx create-churn@latest my-app --jest` |
+| **Production ready** | `npx create-churn@latest my-app --jwt --jest --linting --docker --github` |
+| **MongoDB stack** | `npx create-churn@latest my-app --mongoose --mongodb --session` |
+| **No database** | `npx create-churn@latest my-app --no-orm` |
+| **WebSocket** | `npx create-churn@latest my-app --ws` |
+| **Minimal setup** | `npx create-churn@latest my-app --js --no-orm --no-auth --no-testing --no-linting --no-docker` |
 
 ## Examples
 
-### Full-Stack TypeScript API
+### 1. Full-Stack TypeScript API
 
+Production-ready API with authentication, testing, and deployment configuration.
+
+**Interactive:**
 ```bash
 npx create-churn@latest
-# Select: TypeScript, Bun, HTTP, CORS, Drizzle, PostgreSQL, JWT, Jest, Linting, Docker, GitHub Actions
+# Select: TypeScript → Bun → HTTP → CORS → Drizzle → PostgreSQL →
+#         Path aliases → JWT → Jest → Linting → Docker → GitHub Actions
 ```
 
-**Result**: Production-ready API with authentication, testing, and deployment ready.
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest production-api \
+  --ts --bun --http --cors \
+  --drizzle --postgresql \
+  --aliases --jwt --jest \
+  --linting --docker --github
+```
 
-### Minimal JavaScript API
+**What you get:**
+- TypeScript with path aliases (`@/config`, `@/models`)
+- Drizzle ORM with PostgreSQL
+- JWT authentication with middleware
+- Jest testing with coverage
+- ESLint + Prettier + Husky
+- Docker multi-stage build
+- GitHub Actions CI/CD
 
+---
+
+### 2. Minimal JavaScript API
+
+Lightweight Express server with no dependencies, ready to customize.
+
+**Interactive:**
 ```bash
 npx create-churn@latest
-# Select: JavaScript, npm, HTTP, No CORS, None, No auth, No testing, No linting, No docker, No CI/CD
+# Select: JavaScript → npm → HTTP → No CORS → No ORM →
+#         No auth → No testing → No linting → No docker → No CI/CD
 ```
 
-**Result**: Lightweight Express server, ready to customize.
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest simple-api \
+  --js --npm --http --no-cors \
+  --no-orm --no-auth --no-testing \
+  --no-linting --no-docker --no-cicd
+```
 
-### Real-time WebSocket Server
+**What you get:**
+- Plain JavaScript
+- Express HTTP server
+- No database (add your own)
+- Minimal dependencies
+- Quick prototyping setup
 
+---
+
+### 3. Real-time WebSocket Server
+
+WebSocket server with database persistence and testing.
+
+**Interactive:**
 ```bash
 npx create-churn@latest
-# Select: TypeScript, Bun, WebSocket, Sequelize, SQLite, No auth, Vitest, Linting, Docker
+# Select: TypeScript → Bun → WebSocket → Sequelize → SQLite →
+#         Path aliases → No auth → Vitest → Linting → Docker
 ```
 
-**Result**: WebSocket server with database and testing.
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest realtime-server \
+  --ts --bun --ws \
+  --sequelize --sqlite \
+  --aliases --no-auth \
+  --vitest --linting --docker
+```
 
-### MongoDB Microservice
+**What you get:**
+- WebSocket server (ws library)
+- Sequelize ORM with SQLite
+- Vitest for testing WebSocket events
+- Docker with health checks
+- Linting and formatting
 
+---
+
+### 4. MongoDB Microservice
+
+MongoDB-backed API with session authentication and CI/CD.
+
+**Interactive:**
 ```bash
 npx create-churn@latest
-# Select: TypeScript, pnpm, HTTP, CORS, Mongoose, MongoDB, Session, Jest, Linting, CircleCI
+# Select: TypeScript → pnpm → HTTP → CORS → Mongoose → MongoDB →
+#         Path aliases → Session → Jest → Linting → CircleCI
 ```
 
-**Result**: MongoDB-backed API with session authentication.
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest user-service \
+  --ts --pnpm --http --cors \
+  --mongoose --mongodb \
+  --aliases --session --jest \
+  --linting --circleci
+```
+
+**What you get:**
+- Mongoose ODM with MongoDB
+- Session-based authentication
+- Express session configuration
+- Jest with MongoDB memory server
+- CircleCI pipeline
+- Environment validation (Zod)
+
+---
+
+### 5. Enterprise REST API
+
+Full-featured API with Prisma, OAuth, and comprehensive tooling.
+
+**Interactive:**
+```bash
+npx create-churn@latest
+# Select: TypeScript → yarn → HTTP → CORS → Prisma → MySQL →
+#         Path aliases → OAuth → Jest → Linting → Docker → GitLab CI
+```
+
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest enterprise-api \
+  --ts --yarn --http --cors \
+  --prisma --mysql \
+  --aliases --oauth --jest \
+  --linting --docker --gitlab
+```
+
+**What you get:**
+- Prisma ORM with MySQL
+- OAuth (Google + GitHub)
+- Prisma Studio for database GUI
+- Jest with Supertest
+- Docker Compose with MySQL service
+- GitLab CI/CD pipeline
+
+---
+
+### 6. Quick Prototype (30 seconds)
+
+Fastest way to get a running server.
+
+**Interactive:**
+```bash
+npx create-churn@latest
+# Just press Enter for all defaults
+```
+
+**CLI Flags (v1.2.0):**
+```bash
+npx create-churn@latest my-prototype
+# Uses all defaults: TS + Bun + HTTP + CORS + Prisma + PostgreSQL
+```
+
+**What you get:**
+- TypeScript + Bun (fastest runtime)
+- HTTP REST API with CORS
+- Prisma with PostgreSQL
+- Path aliases enabled
+- No auth, testing, or Docker
+- ESLint + Prettier by default
 
 ## Supported Combinations
 
