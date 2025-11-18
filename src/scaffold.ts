@@ -3,7 +3,6 @@ import path from 'path';
 import { execSync } from 'child_process';
 import chalk from 'chalk';
 import type { ProjectOptions } from './types';
-import { startAnimation, stopAnimation } from './animation';
 import { generatePackageJson } from './templates/package-json';
 import { generateMainFile } from './templates/main-file';
 import { generateTsConfig } from './templates/tsconfig';
@@ -277,9 +276,6 @@ async function initializePackageManager(options: ProjectOptions): Promise<void> 
   try {
     console.log(chalk.blue(`[*] Initializing ${packageManager}...`));
 
-    // Start walking animation during installation
-    startAnimation();
-
     // Initialize package manager with cwd option instead of process.chdir()
     const installCmd = {
       bun: 'bun install',
@@ -293,15 +289,9 @@ async function initializePackageManager(options: ProjectOptions): Promise<void> 
       cwd: path.resolve(targetDir)
     });
 
-    // Stop animation after installation
-    stopAnimation();
-
     console.log(chalk.green(`[+] ${packageManager} initialization completed`));
 
   } catch (error) {
-    // Stop animation on error too
-    stopAnimation();
-
     console.warn(chalk.yellow(`[!] Package manager initialization failed: ${error}`));
     console.log(chalk.gray('You can run the install command manually later.'));
   }

@@ -1,7 +1,6 @@
 import prompts from 'prompts';
 import type { ProjectOptions } from './types';
 import chalk from 'chalk';
-import { startAnimation, stopAnimation } from './animation';
 
 export async function promptUser(): Promise<ProjectOptions | null> {
   console.log(chalk.blue('Let\'s create your Churn backend project! \n'));

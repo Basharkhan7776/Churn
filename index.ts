@@ -3,7 +3,6 @@
 import { promptUser } from './src/prompts';
 import { scaffoldProject } from './src/scaffold';
 import { showWelcome, showSuccess } from './src/utils';
-import { startAnimation, stopAnimation } from './src/animation';
 import { parseFlags, convertFlagsToOptions, hasFlags } from './src/flags';
 import chalk from 'chalk';
 
