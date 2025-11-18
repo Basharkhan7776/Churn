@@ -82,14 +82,14 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (language === 'ts') {
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "typescript": "^5.0.0"
+      "typescript": "latest"
     };
 
     // Add TypeScript runtime for non-bun package managers
     if (packageManager !== 'bun') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "tsx": "^4.0.0"
+        "tsx": "latest"
       };
     } else {
       basePackage.devDependencies = {
@@ -103,20 +103,20 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (protocol === 'http') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "express": "^4.18.0"
+      "express": "latest"
     };
 
     // Add CORS if enabled
     if (options.cors) {
       basePackage.dependencies = {
         ...basePackage.dependencies,
-        "cors": "^2.8.5"
+        "cors": "latest"
       };
     }
   } else if (protocol === 'ws') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "ws": "^8.0.0"
+      "ws": "latest"
     };
   }
 
@@ -125,19 +125,19 @@ export function generatePackageJson(options: ProjectOptions): any {
     if (protocol === 'http') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/express": "^4.17.21"
+        "@types/express": "latest"
       };
 
       if (options.cors) {
         basePackage.devDependencies = {
           ...basePackage.devDependencies,
-          "@types/cors": "^2.8.17"
+          "@types/cors": "latest"
         };
       }
     } else if (protocol === 'ws') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/ws": "^8.5.10"
+        "@types/ws": "latest"
       };
     }
   }
@@ -146,11 +146,11 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (orm === 'prisma') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "@prisma/client": "^5.0.0"
+      "@prisma/client": "latest"
     };
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "prisma": "^5.0.0"
+      "prisma": "latest"
     };
     basePackage.scripts = {
       ...basePackage.scripts,
@@ -165,12 +165,12 @@ export function generatePackageJson(options: ProjectOptions): any {
 
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "drizzle-orm": "^0.29.0",
-      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^9.2.0'
+      "drizzle-orm": "latest",
+      [dbDriver]: "latest"
     };
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "drizzle-kit": "^0.20.0"
+      "drizzle-kit": "latest"
     };
     basePackage.scripts = {
       ...basePackage.scripts,
@@ -184,9 +184,9 @@ export function generatePackageJson(options: ProjectOptions): any {
 
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "typeorm": "^0.3.17",
-      "reflect-metadata": "^0.1.13",
-      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^9.2.0'
+      "typeorm": "latest",
+      "reflect-metadata": "latest",
+      [dbDriver]: "latest"
     };
     basePackage.scripts = {
       ...basePackage.scripts,
@@ -200,13 +200,13 @@ export function generatePackageJson(options: ProjectOptions): any {
 
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "sequelize": "^6.35.0",
-      [dbDriver]: dbDriver === 'pg' ? '^8.11.0' : dbDriver === 'mysql2' ? '^3.6.0' : '^5.1.6'
+      "sequelize": "latest",
+      [dbDriver]: "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/sequelize": "^4.28.0"
+        "@types/sequelize": "latest"
       };
     }
     basePackage.scripts = {
@@ -217,12 +217,12 @@ export function generatePackageJson(options: ProjectOptions): any {
   } else if (orm === 'mongoose') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "mongoose": "^8.0.0"
+      "mongoose": "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/mongoose": "^5.11.97"
+        "@types/mongoose": "latest"
       };
     }
   }
@@ -231,7 +231,7 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (language === 'ts') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "zod": "^3.22.0"
+      "zod": "latest"
     };
   }
 
@@ -239,29 +239,29 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (options.auth === 'jwt') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "jsonwebtoken": "^9.0.2"
+      "jsonwebtoken": "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/jsonwebtoken": "^9.0.5"
+        "@types/jsonwebtoken": "latest"
       };
     }
   } else if (options.auth === 'session') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "express-session": "^1.17.3"
+      "express-session": "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/express-session": "^1.17.10"
+        "@types/express-session": "latest"
       };
     }
   } else if (options.auth === 'oauth') {
     basePackage.dependencies = {
       ...basePackage.dependencies,
-      "axios": "^1.6.0"
+      "axios": "latest"
     };
   }
 
@@ -269,15 +269,15 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (options.testing === 'jest') {
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "jest": "^29.7.0",
-      "supertest": "^6.3.3"
+      "jest": "latest",
+      "supertest": "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/jest": "^29.5.0",
-        "@types/supertest": "^6.0.0",
-        "ts-jest": "^29.1.0"
+        "@types/jest": "latest",
+        "@types/supertest": "latest",
+        "ts-jest": "latest"
       };
     }
     basePackage.scripts = {
@@ -287,14 +287,14 @@ export function generatePackageJson(options: ProjectOptions): any {
   } else if (options.testing === 'vitest') {
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "vitest": "^1.0.0",
-      "supertest": "^6.3.3",
-      "@vitest/coverage-v8": "^1.0.0"
+      "vitest": "latest",
+      "supertest": "latest",
+      "@vitest/coverage-v8": "latest"
     };
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@types/supertest": "^6.0.0"
+        "@types/supertest": "latest"
       };
     }
   }
@@ -303,19 +303,19 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (options.linting) {
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "eslint": "^8.55.0",
-      "prettier": "^3.1.0",
-      "eslint-plugin-prettier": "^5.0.1",
-      "eslint-config-prettier": "^9.1.0",
-      "lint-staged": "^15.2.0",
-      "husky": "^8.0.3"
+      "eslint": "latest",
+      "prettier": "latest",
+      "eslint-plugin-prettier": "latest",
+      "eslint-config-prettier": "latest",
+      "lint-staged": "latest",
+      "husky": "latest"
     };
 
     if (language === 'ts') {
       basePackage.devDependencies = {
         ...basePackage.devDependencies,
-        "@typescript-eslint/parser": "^6.15.0",
-        "@typescript-eslint/eslint-plugin": "^6.15.0"
+        "@typescript-eslint/parser": "latest",
+        "@typescript-eslint/eslint-plugin": "latest"
       };
     }
 
@@ -331,7 +331,7 @@ export function generatePackageJson(options: ProjectOptions): any {
   if (aliases && language === 'ts') {
     basePackage.devDependencies = {
       ...basePackage.devDependencies,
-      "tsc-alias": "^1.8.0"
+      "tsc-alias": "latest"
     };
     // Update build script to include path alias processing
     if (packageManager === 'bun') {
