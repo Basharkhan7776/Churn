@@ -6,6 +6,7 @@ import {
   TestTube,
   Layers,
   Code,
+  Coins,
 } from "lucide-react";
 
 const features = [
@@ -20,6 +21,11 @@ const features = [
     description: "PostgreSQL, MySQL, SQLite, MongoDB",
   },
   {
+    icon: Coins,
+    title: "Smart Contracts",
+    description: "Solidity with Hardhat or Foundry, ERC20, NFTs",
+  },
+  {
     icon: Lock,
     title: "Authentication",
     description: "JWT, OAuth, Session-based auth",
@@ -32,7 +38,7 @@ const features = [
   {
     icon: TestTube,
     title: "Testing Setup",
-    description: "Jest, Vitest configurations included",
+    description: "Jest, Vitest, Hardhat, Forge tests",
   },
   {
     icon: Code,
@@ -41,15 +47,13 @@ const features = [
   },
 ];
 
-const codeSnippet = `# Create a new project
-npx create-churn@latest my-api
-
-# With specific options
+const codeSnippet = `# Create a backend API
 npx create-churn@latest my-api \\
-  --prisma \\
-  --jwt \\
-  --docker \\
-  --postgres
+  --prisma --jwt --docker --postgres
+
+# Create smart contracts
+npx create-churn@latest my-token \\
+  --solidity --hardhat --token --uups
 
 # Navigate and start
 cd my-api

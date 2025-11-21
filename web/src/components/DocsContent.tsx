@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { CommandBlock } from "./CommandBlock";
 import { useAppSelector } from "@/hooks/useAppDispatch";
 import { commands } from "@/data/docsContent";
-import { 
-  Database, Lock, Container, TestTube, Layers, Code, 
-  Zap, FileCode, Settings, Package 
+import {
+  Database, Lock, Container, TestTube, Layers, Code,
+  Zap, FileCode, Settings, Package, Coins
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +14,10 @@ import { toast } from "sonner";
 const features = [
   { icon: Layers, title: "Multiple ORMs", desc: "Prisma, Drizzle, TypeORM, Sequelize, Mongoose" },
   { icon: Database, title: "Database Support", desc: "PostgreSQL, MySQL, SQLite, MongoDB" },
+  { icon: Coins, title: "Smart Contracts", desc: "Solidity with Hardhat, Foundry, ERC20, NFTs" },
   { icon: Lock, title: "Authentication", desc: "JWT, OAuth, Session-based auth" },
   { icon: Container, title: "Docker Ready", desc: "Pre-configured Docker & Docker Compose" },
-  { icon: TestTube, title: "Testing Setup", desc: "Jest, Vitest configurations included" },
+  { icon: TestTube, title: "Testing Setup", desc: "Jest, Vitest, Hardhat, Forge tests" },
   { icon: Code, title: "TypeScript First", desc: "Full TypeScript support out of the box" },
 ];
 
@@ -51,7 +52,7 @@ export function DocsContent() {
         <h1 id="quick-start" className="text-4xl font-bold mb-6">Quick Start</h1>
         
         <p className="text-muted-foreground">
-          Create production-ready backend projects with one command. Choose your ORM, database, auth strategy, and more.
+          Create production-ready backend projects or smart contracts with one command. Choose your ORM, database, auth strategy, or Solidity framework (Hardhat/Foundry) for EVM development.
         </p>
 
         <CommandBlock command={`${baseCommand} my-api`} />
@@ -103,7 +104,7 @@ export function DocsContent() {
           {[
             {
               category: 'Language',
-              flags: ['--ts', '--typescript', '--js', '--javascript']
+              flags: ['--ts', '--typescript', '--js', '--javascript', '--solidity', '--sol']
             },
             {
               category: 'Package Manager',
@@ -120,6 +121,22 @@ export function DocsContent() {
             {
               category: 'Database',
               flags: ['--postgresql', '--postgres', '--mysql', '--sqlite', '--mongodb']
+            },
+            {
+              category: 'EVM Framework (for Solidity)',
+              flags: ['--hardhat', '--foundry', '--no-framework']
+            },
+            {
+              category: 'Contract Types (for Solidity)',
+              flags: ['--token', '--nft', '--both-contracts', '--no-contracts']
+            },
+            {
+              category: 'Token Standards (for Solidity)',
+              flags: ['--erc20', '--erc721', '--erc1155']
+            },
+            {
+              category: 'Proxy Patterns (for Solidity)',
+              flags: ['--uups', '--transparent', '--no-proxy']
             },
             {
               category: 'TypeScript Features',
@@ -154,7 +171,7 @@ export function DocsContent() {
         </div>
 
         <h1 id="examples" className="text-4xl font-bold mt-16 mb-6">Examples</h1>
-        
+
         <div className="space-y-4 not-prose">
           <div>
             <h3 className="text-sm font-semibold mb-2">Full-stack API with Prisma & JWT</h3>
@@ -168,6 +185,18 @@ export function DocsContent() {
             <h3 className="text-sm font-semibold mb-2">TypeORM with OAuth</h3>
             <CommandBlock command={`${baseCommand} my-api --typeorm --oauth --mysql --docker`} />
           </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">ERC20 Token with Hardhat & UUPS Proxy</h3>
+            <CommandBlock command={`${baseCommand} my-token --solidity --hardhat --token --uups`} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">NFT Collection with Foundry</h3>
+            <CommandBlock command={`${baseCommand} nft-project --solidity --foundry --nft --erc721 --no-proxy`} />
+          </div>
+          <div>
+            <h3 className="text-sm font-semibold mb-2">Token + NFT Project with Hardhat</h3>
+            <CommandBlock command={`${baseCommand} my-contracts --solidity --hardhat --both-contracts --erc1155`} />
+          </div>
         </div>
 
         <h1 id="supported-combinations" className="text-4xl font-bold mt-16 mb-6">Supported Combinations</h1>
@@ -175,7 +204,7 @@ export function DocsContent() {
         <div className="not-prose">
           <Card>
             <CardContent className="p-6">
-              <div className="grid grid-cols-2 gap-6 text-sm">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 text-sm">
                 <div>
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
                     <Database className="h-4 w-4 text-accent" />
@@ -195,6 +224,18 @@ export function DocsContent() {
                   </h4>
                   <ul className="space-y-1 text-muted-foreground text-xs">
                     <li>• Mongoose + MongoDB</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    <Coins className="h-4 w-4 text-accent" />
+                    Smart Contracts
+                  </h4>
+                  <ul className="space-y-1 text-muted-foreground text-xs">
+                    <li>• Hardhat + ERC20</li>
+                    <li>• Foundry + ERC721</li>
+                    <li>• Hardhat + ERC1155</li>
+                    <li>• UUPS Proxy Pattern</li>
                   </ul>
                 </div>
               </div>

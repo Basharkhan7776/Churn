@@ -37,7 +37,7 @@ export function Hero() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-4xl sm:text-5xl md:text-6xl font-bold mb-6 text-balance"
         >
-          Scaffold production-ready backends
+          Scaffold backends & smart contracts
           <br />
           <span className="text-muted-foreground">with one command</span>
         </motion.h1>
