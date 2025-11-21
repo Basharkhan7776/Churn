@@ -21,20 +21,42 @@ export function showSuccess(options: ProjectOptions) {
 |____/ \\__,_|\\___\\___\\___||___/___(_)
   `));
 
-  console.log(chalk.green(`\n[+] Your Churn backend project "${options.projectName}" has been created successfully!\n`));
+  const projectType = options.language === 'solidity' ? 'smart contract' : 'backend';
+  console.log(chalk.green(`\n[+] Your Churn ${projectType} project "${options.projectName}" has been created successfully!\n`));
 
   console.log(chalk.blue('[*] Project structure:'));
   console.log(chalk.gray(`    ${options.targetDir}/\n`));
 
   console.log(chalk.blue('[>] Next steps:'));
   console.log(chalk.white(`    1. cd ${options.projectName}`));
-  console.log(chalk.white(`    2. ${getInstallCommand(options.packageManager)}`));
-  console.log(chalk.white(`    3. ${getStartCommand(options.packageManager)}\n`));
 
-  if (options.orm === 'prisma') {
+  if (options.language === 'solidity') {
+    // Solidity-specific next steps
+    if (options.evmFramework === 'hardhat') {
+      console.log(chalk.white(`    2. ${getInstallCommand(options.packageManager)}`));
+      console.log(chalk.white(`    3. ${getRunCommand(options.packageManager)} compile`));
+      console.log(chalk.white(`    4. ${getRunCommand(options.packageManager)} test\n`));
+    } else if (options.evmFramework === 'foundry') {
+      console.log(chalk.white(`    2. forge build`));
+      console.log(chalk.white(`    3. forge test\n`));
+    } else {
+      console.log(chalk.white(`    2. ${getInstallCommand(options.packageManager)}`));
+      console.log(chalk.white(`    3. ${getRunCommand(options.packageManager)} compile\n`));
+    }
+
     console.log(chalk.yellow('[!] Don\'t forget to:'));
-    console.log(chalk.white('    - Set up your database connection'));
-    console.log(chalk.white('    - Run database migrations\n'));
+    console.log(chalk.white('    - Set up your .env file with RPC URLs and private key'));
+    console.log(chalk.white('    - Never commit your private keys!\n'));
+  } else {
+    // Backend-specific next steps
+    console.log(chalk.white(`    2. ${getInstallCommand(options.packageManager)}`));
+    console.log(chalk.white(`    3. ${getStartCommand(options.packageManager)}\n`));
+
+    if (options.orm === 'prisma') {
+      console.log(chalk.yellow('[!] Don\'t forget to:'));
+      console.log(chalk.white('    - Set up your database connection'));
+      console.log(chalk.white('    - Run database migrations\n'));
+    }
   }
 
   console.log(chalk.blue('[i] Documentation:'));
@@ -58,5 +80,15 @@ function getStartCommand(packageManager: string): string {
     case 'pnpm': return 'pnpm dev';
     case 'npm': return 'npm run dev';
     default: return 'bun run dev';
+  }
+}
+
+function getRunCommand(packageManager: string): string {
+  switch (packageManager) {
+    case 'bun': return 'bun run';
+    case 'yarn': return 'yarn';
+    case 'pnpm': return 'pnpm';
+    case 'npm': return 'npm run';
+    default: return 'bun run';
   }
 } 

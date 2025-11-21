@@ -159,7 +159,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 0
     },
     {
-      type: 'select',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'select' : null,
       name: 'testing',
       message: 'Which testing framework would you like to use?',
       choices: [
@@ -170,7 +170,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 0
     },
     {
-      type: 'toggle',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'toggle' : null,
       name: 'linting',
       message: 'Would you like to add ESLint & Prettier?',
       initial: true,
@@ -178,7 +178,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       inactive: 'No'
     },
     {
-      type: 'toggle',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'toggle' : null,
       name: 'docker',
       message: 'Would you like to add Docker support?',
       initial: false,
@@ -186,7 +186,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       inactive: 'No'
     },
     {
-      type: 'select',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'select' : null,
       name: 'cicd',
       message: 'Which CI/CD would you like to configure?',
       choices: [

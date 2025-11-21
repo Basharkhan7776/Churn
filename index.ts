@@ -27,16 +27,26 @@ async function main() {
       console.log(chalk.blue(`\nCreating ${chalk.bold(options.projectName)} with the following configuration:`));
       console.log(chalk.gray(`  Language: ${options.language}`));
       console.log(chalk.gray(`  Package Manager: ${options.packageManager}`));
-      console.log(chalk.gray(`  Protocol: ${options.protocol}`));
-      if (options.cors !== undefined) console.log(chalk.gray(`  CORS: ${options.cors ? 'enabled' : 'disabled'}`));
-      console.log(chalk.gray(`  ORM: ${options.orm}`));
-      if (options.database) console.log(chalk.gray(`  Database: ${options.database}`));
-      console.log(chalk.gray(`  Path Aliases: ${options.aliases ? 'enabled' : 'disabled'}`));
-      if (options.auth) console.log(chalk.gray(`  Authentication: ${options.auth}`));
-      if (options.testing) console.log(chalk.gray(`  Testing: ${options.testing}`));
-      console.log(chalk.gray(`  Linting: ${options.linting ? 'enabled' : 'disabled'}`));
-      console.log(chalk.gray(`  Docker: ${options.docker ? 'enabled' : 'disabled'}`));
-      if (options.cicd) console.log(chalk.gray(`  CI/CD: ${options.cicd}`));
+
+      if (options.language === 'solidity') {
+        // Solidity-specific options
+        if (options.evmFramework) console.log(chalk.gray(`  EVM Framework: ${options.evmFramework}`));
+        if (options.contractType) console.log(chalk.gray(`  Contract Type: ${options.contractType}`));
+        if (options.tokenStandard) console.log(chalk.gray(`  Token Standard: ${options.tokenStandard}`));
+        if (options.proxy) console.log(chalk.gray(`  Proxy Pattern: ${options.proxy}`));
+      } else {
+        // Backend-specific options
+        console.log(chalk.gray(`  Protocol: ${options.protocol}`));
+        if (options.cors !== undefined) console.log(chalk.gray(`  CORS: ${options.cors ? 'enabled' : 'disabled'}`));
+        console.log(chalk.gray(`  ORM: ${options.orm}`));
+        if (options.database) console.log(chalk.gray(`  Database: ${options.database}`));
+        console.log(chalk.gray(`  Path Aliases: ${options.aliases ? 'enabled' : 'disabled'}`));
+        if (options.auth) console.log(chalk.gray(`  Authentication: ${options.auth}`));
+        if (options.testing) console.log(chalk.gray(`  Testing: ${options.testing}`));
+        console.log(chalk.gray(`  Linting: ${options.linting ? 'enabled' : 'disabled'}`));
+        console.log(chalk.gray(`  Docker: ${options.docker ? 'enabled' : 'disabled'}`));
+        if (options.cicd) console.log(chalk.gray(`  CI/CD: ${options.cicd}`));
+      }
       console.log('');
     } else {
       // Interactive mode with prompts
