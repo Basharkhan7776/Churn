@@ -1,7 +1,7 @@
 import type { ProjectOptions } from '../types';
 
 export function generatePackageJson(options: ProjectOptions): any {
-  const { projectName, language, packageManager, protocol, orm, aliases } = options;
+  const { projectName, language, packageManager, protocol, orm, aliases, evmFramework, proxy } = options;
 
   // Helper function to get package manager commands
   function getPackageManagerCommands() {
@@ -56,7 +56,7 @@ export function generatePackageJson(options: ProjectOptions): any {
     version: "1.0.0",
     description: `A Churn backend project built with ${language === 'ts' ? 'TypeScript' : 'JavaScript'}`,
     main: language === 'ts' ? 'dist/index.js' : 'index.js',
-    type: "module",
+    ...(language !== 'solidity' ? { type: "module" } : {}),
     scripts: {
       dev: language === 'ts' ? (packageManager === 'bun' ? 'bun run --watch src/index.ts' : packageManager === 'yarn' ? 'yarn tsx watch src/index.ts' : packageManager === 'pnpm' ? 'pnpm tsx watch src/index.ts' : 'tsx watch src/index.ts') : (packageManager === 'bun' ? 'bun --watch index.js' : 'node --watch index.js'),
       build: commands.build,
@@ -97,6 +97,100 @@ export function generatePackageJson(options: ProjectOptions): any {
         "bun-types": "latest"
       };
     }
+  }
+
+  // Add Solidity/EVM-specific dependencies
+  if (language === 'solidity') {
+    basePackage.description = `A Solidity smart contract project using ${evmFramework === 'hardhat' ? 'Hardhat' : evmFramework === 'foundry' ? 'Foundry' : 'vanilla Solidity'}`;
+
+    if (evmFramework === 'hardhat') {
+      basePackage.dependencies = {
+        ...basePackage.dependencies,
+        "@openzeppelin/contracts": "^5.0.0",
+        "dotenv": "latest"
+      };
+
+      if (proxy !== 'none') {
+        basePackage.dependencies = {
+          ...basePackage.dependencies,
+          "@openzeppelin/contracts-upgradeable": "^5.0.0"
+        };
+      }
+
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "hardhat": "latest",
+        "@nomicfoundation/hardhat-toolbox": "latest",
+        "@nomicfoundation/hardhat-ethers": "latest",
+        "@nomicfoundation/hardhat-verify": "latest",
+        "ethers": "latest",
+        "@typechain/hardhat": "latest",
+        "@typechain/ethers-v6": "latest",
+        "typechain": "latest",
+        "hardhat-gas-reporter": "latest",
+        "solidity-coverage": "latest",
+        "chai": "latest"
+      };
+
+      if (proxy !== 'none') {
+        basePackage.devDependencies = {
+          ...basePackage.devDependencies,
+          "@openzeppelin/hardhat-upgrades": "latest"
+        };
+      }
+
+      basePackage.scripts = {
+        compile: "hardhat compile",
+        test: "hardhat test",
+        deploy: "hardhat run scripts/deploy.ts",
+        "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+        "deploy:mainnet": "hardhat run scripts/deploy.ts --network mainnet",
+        node: "hardhat node",
+        coverage: "hardhat coverage",
+        verify: "hardhat verify"
+      };
+    } else if (evmFramework === 'foundry') {
+      // Foundry uses forge, no npm packages needed
+      basePackage.scripts = {
+        build: "forge build",
+        test: "forge test",
+        "test:verbose": "forge test -vvvv",
+        "test:gas": "forge test --gas-report",
+        coverage: "forge coverage",
+        deploy: "forge script script/Deploy.s.sol --broadcast",
+        "deploy:sepolia": "forge script script/Deploy.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast --verify",
+        "deploy:mainnet": "forge script script/Deploy.s.sol --rpc-url $MAINNET_RPC_URL --broadcast --verify",
+        anvil: "anvil",
+        format: "forge fmt"
+      };
+
+      basePackage.description = `A Solidity smart contract project using Foundry. Note: Foundry must be installed separately. See https://book.getfoundry.sh/`;
+    } else {
+      // Vanilla Solidity - just compiler
+      basePackage.dependencies = {
+        ...basePackage.dependencies,
+        "@openzeppelin/contracts": "^5.0.0"
+      };
+
+      if (proxy !== 'none') {
+        basePackage.dependencies = {
+          ...basePackage.dependencies,
+          "@openzeppelin/contracts-upgradeable": "^5.0.0"
+        };
+      }
+
+      basePackage.devDependencies = {
+        ...basePackage.devDependencies,
+        "solc": "latest"
+      };
+
+      basePackage.scripts = {
+        compile: "solc --bin --abi contracts/*.sol -o build/"
+      };
+    }
+
+    // Early return for Solidity projects as they don't need backend dependencies
+    return basePackage;
   }
 
   // Add protocol-specific dependencies

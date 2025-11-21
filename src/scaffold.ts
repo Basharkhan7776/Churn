@@ -17,6 +17,9 @@ import { generateJestConfig, generateVitestConfig, generateTestExample } from '.
 import { generateESLintConfig, generatePrettierConfig, generatePrettierIgnore, generateHuskyPreCommit, generateLintStagedConfig } from './templates/linting-templates';
 import { generateDockerfile, generateDockerCompose, generateDockerIgnore } from './templates/docker-templates';
 import { generateGitHubActions, generateGitLabCI, generateCircleCI } from './templates/cicd-templates';
+import { generateERC20Contract, generateERC721Contract, generateERC1155Contract } from './templates/solidity-templates';
+import { generateHardhatConfig, generateHardhatDeployScript, generateHardhatTest, generateHardhatEnv, generateHardhatReadme } from './templates/hardhat-templates';
+import { generateFoundryConfig, generateFoundryDeployScript, generateFoundryTest, generateFoundryEnv, generateFoundryReadme, generateFoundryRemappings } from './templates/foundry-templates';
 
 export async function scaffoldProject(options: ProjectOptions): Promise<void> {
   // Clear screen before scaffolding output
@@ -46,13 +49,19 @@ async function createProjectDirectory(targetDir: string): Promise<void> {
 }
 
 async function generateProjectFiles(options: ProjectOptions): Promise<void> {
-  const { targetDir, language, protocol, orm, aliases } = options;
+  const { targetDir, language, protocol, orm, aliases, evmFramework, contractType, tokenStandard } = options;
 
   try {
     // Generate package.json
     const packageJson = generatePackageJson(options);
     await fs.writeJson(path.join(targetDir, 'package.json'), packageJson, { spaces: 2 });
     console.log(chalk.gray('[*] Generated package.json'));
+
+    // Handle Solidity projects separately
+    if (language === 'solidity') {
+      await generateSolidityProject(options);
+      return;
+    }
 
     // Generate main file
     const mainFile = generateMainFile(options);
@@ -270,8 +279,274 @@ async function generateProjectFiles(options: ProjectOptions): Promise<void> {
   }
 }
 
+async function generateSolidityProject(options: ProjectOptions): Promise<void> {
+  const { targetDir, evmFramework, contractType, tokenStandard, projectName } = options;
+
+  try {
+    if (evmFramework === 'hardhat') {
+      // Generate Hardhat configuration
+      const hardhatConfig = generateHardhatConfig(options);
+      await fs.writeFile(path.join(targetDir, 'hardhat.config.js'), hardhatConfig);
+      console.log(chalk.gray('[*] Generated hardhat.config.js'));
+
+      // Create contracts directory
+      const contractsDir = path.join(targetDir, 'contracts');
+      await fs.ensureDir(contractsDir);
+
+      // Generate contracts based on type
+      if (contractType === 'token' || contractType === 'both') {
+        const erc20Contract = generateERC20Contract(options);
+        const contractName = toPascalCase(projectName);
+        await fs.writeFile(path.join(contractsDir, `${contractName}.sol`), erc20Contract);
+        console.log(chalk.gray(`[*] Generated contracts/${contractName}.sol (ERC20)`));
+      }
+
+      if (contractType === 'nft' || contractType === 'both') {
+        const nftContractName = contractType === 'both' ? `${toPascalCase(projectName)}NFT` : toPascalCase(projectName);
+        if (tokenStandard === 'erc1155') {
+          const erc1155Contract = generateERC1155Contract(options);
+          await fs.writeFile(path.join(contractsDir, `${nftContractName}.sol`), erc1155Contract);
+          console.log(chalk.gray(`[*] Generated contracts/${nftContractName}.sol (ERC1155)`));
+        } else {
+          const erc721Contract = generateERC721Contract(options);
+          await fs.writeFile(path.join(contractsDir, `${nftContractName}.sol`), erc721Contract);
+          console.log(chalk.gray(`[*] Generated contracts/${nftContractName}.sol (ERC721)`));
+        }
+      }
+
+      // Create scripts directory
+      const scriptsDir = path.join(targetDir, 'scripts');
+      await fs.ensureDir(scriptsDir);
+
+      // Generate deploy script
+      const deployScript = generateHardhatDeployScript(options);
+      await fs.writeFile(path.join(scriptsDir, 'deploy.ts'), deployScript);
+      console.log(chalk.gray('[*] Generated scripts/deploy.ts'));
+
+      // Create test directory
+      const testDir = path.join(targetDir, 'test');
+      await fs.ensureDir(testDir);
+
+      // Generate test file
+      const testFile = generateHardhatTest(options);
+      await fs.writeFile(path.join(testDir, 'Contract.test.ts'), testFile);
+      console.log(chalk.gray('[*] Generated test/Contract.test.ts'));
+
+      // Generate .env.example
+      const envExample = generateHardhatEnv();
+      await fs.writeFile(path.join(targetDir, '.env.example'), envExample);
+      console.log(chalk.gray('[*] Generated .env.example'));
+
+      // Generate README
+      const readme = generateHardhatReadme(options);
+      await fs.writeFile(path.join(targetDir, 'README.md'), readme);
+      console.log(chalk.gray('[*] Generated README.md'));
+
+    } else if (evmFramework === 'foundry') {
+      // Generate Foundry configuration
+      const foundryConfig = generateFoundryConfig();
+      await fs.writeFile(path.join(targetDir, 'foundry.toml'), foundryConfig);
+      console.log(chalk.gray('[*] Generated foundry.toml'));
+
+      // Generate remappings
+      const remappings = generateFoundryRemappings();
+      await fs.writeFile(path.join(targetDir, 'remappings.txt'), remappings);
+      console.log(chalk.gray('[*] Generated remappings.txt'));
+
+      // Create src directory
+      const srcDir = path.join(targetDir, 'src');
+      await fs.ensureDir(srcDir);
+
+      // Generate contracts
+      if (contractType === 'token' || contractType === 'both') {
+        const erc20Contract = generateERC20Contract(options);
+        const contractName = toPascalCase(projectName);
+        await fs.writeFile(path.join(srcDir, `${contractName}.sol`), erc20Contract);
+        console.log(chalk.gray(`[*] Generated src/${contractName}.sol (ERC20)`));
+      }
+
+      if (contractType === 'nft' || contractType === 'both') {
+        const nftContractName = contractType === 'both' ? `${toPascalCase(projectName)}NFT` : toPascalCase(projectName);
+        if (tokenStandard === 'erc1155') {
+          const erc1155Contract = generateERC1155Contract(options);
+          await fs.writeFile(path.join(srcDir, `${nftContractName}.sol`), erc1155Contract);
+          console.log(chalk.gray(`[*] Generated src/${nftContractName}.sol (ERC1155)`));
+        } else {
+          const erc721Contract = generateERC721Contract(options);
+          await fs.writeFile(path.join(srcDir, `${nftContractName}.sol`), erc721Contract);
+          console.log(chalk.gray(`[*] Generated src/${nftContractName}.sol (ERC721)`));
+        }
+      }
+
+      // Create script directory
+      const scriptDir = path.join(targetDir, 'script');
+      await fs.ensureDir(scriptDir);
+
+      // Generate deploy script
+      const deployScript = generateFoundryDeployScript(options);
+      await fs.writeFile(path.join(scriptDir, 'Deploy.s.sol'), deployScript);
+      console.log(chalk.gray('[*] Generated script/Deploy.s.sol'));
+
+      // Create test directory
+      const testDir = path.join(targetDir, 'test');
+      await fs.ensureDir(testDir);
+
+      // Generate test file
+      const testFile = generateFoundryTest(options);
+      await fs.writeFile(path.join(testDir, 'Contract.t.sol'), testFile);
+      console.log(chalk.gray('[*] Generated test/Contract.t.sol'));
+
+      // Generate .env.example
+      const envExample = generateFoundryEnv();
+      await fs.writeFile(path.join(targetDir, '.env.example'), envExample);
+      console.log(chalk.gray('[*] Generated .env.example'));
+
+      // Generate README
+      const readme = generateFoundryReadme(options);
+      await fs.writeFile(path.join(targetDir, 'README.md'), readme);
+      console.log(chalk.gray('[*] Generated README.md'));
+
+      // Install Foundry dependencies
+      console.log(chalk.blue('[*] Installing Foundry dependencies...'));
+      try {
+        execSync('forge install OpenZeppelin/openzeppelin-contracts --no-commit', {
+          stdio: 'inherit',
+          cwd: path.resolve(targetDir)
+        });
+        if (options.proxy !== 'none') {
+          execSync('forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit', {
+            stdio: 'inherit',
+            cwd: path.resolve(targetDir)
+          });
+        }
+        execSync('forge install foundry-rs/forge-std --no-commit', {
+          stdio: 'inherit',
+          cwd: path.resolve(targetDir)
+        });
+        console.log(chalk.green('[+] Foundry dependencies installed'));
+      } catch (error) {
+        console.warn(chalk.yellow('[!] Foundry dependency installation failed. Please run manually.'));
+      }
+
+    } else {
+      // Vanilla Solidity
+      const contractsDir = path.join(targetDir, 'contracts');
+      await fs.ensureDir(contractsDir);
+
+      // Generate contracts
+      if (contractType === 'token' || contractType === 'both') {
+        const erc20Contract = generateERC20Contract(options);
+        const contractName = toPascalCase(projectName);
+        await fs.writeFile(path.join(contractsDir, `${contractName}.sol`), erc20Contract);
+        console.log(chalk.gray(`[*] Generated contracts/${contractName}.sol (ERC20)`));
+      }
+
+      if (contractType === 'nft' || contractType === 'both') {
+        const nftContractName = contractType === 'both' ? `${toPascalCase(projectName)}NFT` : toPascalCase(projectName);
+        if (tokenStandard === 'erc1155') {
+          const erc1155Contract = generateERC1155Contract(options);
+          await fs.writeFile(path.join(contractsDir, `${nftContractName}.sol`), erc1155Contract);
+          console.log(chalk.gray(`[*] Generated contracts/${nftContractName}.sol (ERC1155)`));
+        } else {
+          const erc721Contract = generateERC721Contract(options);
+          await fs.writeFile(path.join(contractsDir, `${nftContractName}.sol`), erc721Contract);
+          console.log(chalk.gray(`[*] Generated contracts/${nftContractName}.sol (ERC721)`));
+        }
+      }
+
+      // Generate simple README
+      const readme = `# ${projectName}
+
+A vanilla Solidity smart contract project.
+
+## Installation
+
+\`\`\`bash
+npm install
+\`\`\`
+
+## Compilation
+
+\`\`\`bash
+npm run compile
+\`\`\`
+
+## Note
+
+This is a vanilla Solidity setup. Consider using Hardhat or Foundry for a better development experience.
+`;
+      await fs.writeFile(path.join(targetDir, 'README.md'), readme);
+      console.log(chalk.gray('[*] Generated README.md'));
+    }
+
+    // Generate .gitignore
+    const gitignore = generateSolidityGitignore(evmFramework);
+    await fs.writeFile(path.join(targetDir, '.gitignore'), gitignore);
+    console.log(chalk.gray('[*] Generated .gitignore'));
+
+  } catch (error) {
+    throw new Error(`Failed to generate Solidity project: ${error}`);
+  }
+}
+
+function generateSolidityGitignore(evmFramework?: string): string {
+  let gitignore = `
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+
+# Editor directories
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+`;
+
+  if (evmFramework === 'hardhat') {
+    gitignore += `
+# Hardhat
+cache/
+artifacts/
+coverage/
+typechain-types/
+`;
+  } else if (evmFramework === 'foundry') {
+    gitignore += `
+# Foundry
+out/
+cache/
+broadcast/
+lib/
+`;
+  }
+
+  return gitignore.trim();
+}
+
+function toPascalCase(str: string): string {
+  return str
+    .split(/[-_\s]/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join('');
+}
+
 async function initializePackageManager(options: ProjectOptions): Promise<void> {
-  const { targetDir, packageManager } = options;
+  const { targetDir, packageManager, language, evmFramework } = options;
+
+  // Skip npm installation for Foundry projects as they use forge
+  if (language === 'solidity' && evmFramework === 'foundry') {
+    console.log(chalk.gray('[*] Skipping npm installation for Foundry project'));
+    return;
+  }
 
   try {
     console.log(chalk.blue(`[*] Initializing ${packageManager}...`));

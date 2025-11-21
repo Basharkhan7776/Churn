@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 interface ParsedFlags {
   projectName?: string;
-  language?: 'js' | 'ts';
+  language?: 'js' | 'ts' | 'solidity';
   packageManager?: 'bun' | 'yarn' | 'pnpm' | 'npm';
   protocol?: 'http' | 'ws';
   cors?: boolean;
@@ -15,6 +15,11 @@ interface ParsedFlags {
   linting?: boolean;
   docker?: boolean;
   cicd?: 'none' | 'github' | 'gitlab' | 'circleci';
+  // EVM-specific flags
+  evmFramework?: 'hardhat' | 'foundry' | 'none';
+  contractType?: 'token' | 'nft' | 'both' | 'none';
+  tokenStandard?: 'erc20' | 'erc721' | 'erc1155';
+  proxy?: 'none' | 'uups' | 'transparent';
 }
 
 export function parseFlags(args: string[]): ParsedFlags | null {
@@ -37,6 +42,46 @@ export function parseFlags(args: string[]): ParsedFlags | null {
       flags.language = 'ts';
     } else if (arg === '--js' || arg === '--javascript') {
       flags.language = 'js';
+    } else if (arg === '--solidity' || arg === '--sol') {
+      flags.language = 'solidity';
+    }
+
+    // EVM Framework flags
+    else if (arg === '--hardhat') {
+      flags.evmFramework = 'hardhat';
+    } else if (arg === '--foundry') {
+      flags.evmFramework = 'foundry';
+    } else if (arg === '--no-framework') {
+      flags.evmFramework = 'none';
+    }
+
+    // Contract type flags
+    else if (arg === '--token') {
+      flags.contractType = 'token';
+    } else if (arg === '--nft') {
+      flags.contractType = 'nft';
+    } else if (arg === '--both-contracts') {
+      flags.contractType = 'both';
+    } else if (arg === '--no-contracts') {
+      flags.contractType = 'none';
+    }
+
+    // Token standard flags
+    else if (arg === '--erc20') {
+      flags.tokenStandard = 'erc20';
+    } else if (arg === '--erc721') {
+      flags.tokenStandard = 'erc721';
+    } else if (arg === '--erc1155') {
+      flags.tokenStandard = 'erc1155';
+    }
+
+    // Proxy flags
+    else if (arg === '--uups') {
+      flags.proxy = 'uups';
+    } else if (arg === '--transparent') {
+      flags.proxy = 'transparent';
+    } else if (arg === '--no-proxy') {
+      flags.proxy = 'none';
     }
 
     // Package manager flags
@@ -189,6 +234,26 @@ export function convertFlagsToOptions(flags: ParsedFlags): ProjectOptions {
   const testing = flags.testing || 'none';
   const cicd = flags.cicd || 'none';
 
+  // Handle EVM-specific options
+  let evmFramework: 'hardhat' | 'foundry' | 'none' | undefined;
+  let contractType: 'token' | 'nft' | 'both' | 'none' | undefined;
+  let tokenStandard: 'erc20' | 'erc721' | 'erc1155' | undefined;
+  let proxy: 'none' | 'uups' | 'transparent' | undefined;
+
+  if (language === 'solidity') {
+    evmFramework = flags.evmFramework || 'hardhat';
+    contractType = flags.contractType || 'token';
+
+    // Auto-set token standard based on contract type
+    if (contractType === 'nft' || contractType === 'both') {
+      tokenStandard = flags.tokenStandard || 'erc721';
+    } else if (contractType === 'token') {
+      tokenStandard = 'erc20';
+    }
+
+    proxy = flags.proxy || 'none';
+  }
+
   const targetDir = `./${projectName}`;
 
   return {
@@ -205,7 +270,11 @@ export function convertFlagsToOptions(flags: ParsedFlags): ProjectOptions {
     linting,
     docker,
     cicd,
-    targetDir
+    targetDir,
+    evmFramework,
+    contractType,
+    tokenStandard,
+    proxy
   };
 }
 
@@ -235,6 +304,7 @@ ${chalk.bold('OPTIONS:')}
   ${chalk.yellow('Language:')}
     --ts, --typescript    Use TypeScript (default)
     --js, --javascript    Use JavaScript
+    --solidity, --sol     Use Solidity (Smart Contracts)
 
   ${chalk.yellow('Package Manager:')}
     --bun                 Use Bun (default)
@@ -261,6 +331,27 @@ ${chalk.bold('OPTIONS:')}
     --mysql                     MySQL database
     --sqlite                    SQLite database
     --mongodb                   MongoDB database (auto with Mongoose)
+
+  ${chalk.yellow('EVM/Solidity Framework (for --solidity):')}
+    --hardhat             Use Hardhat framework (default)
+    --foundry             Use Foundry framework
+    --no-framework        Vanilla Solidity (no framework)
+
+  ${chalk.yellow('Contract Types (for --solidity):')}
+    --token               Generate ERC20 token contract (default)
+    --nft                 Generate NFT contract (ERC721/ERC1155)
+    --both-contracts      Generate both Token and NFT
+    --no-contracts        Skip contract generation
+
+  ${chalk.yellow('Token Standards (for --solidity):')}
+    --erc20               ERC20 token standard (default for --token)
+    --erc721              ERC721 NFT standard (default for --nft)
+    --erc1155             ERC1155 multi-token standard
+
+  ${chalk.yellow('Proxy Patterns (for --solidity):')}
+    --uups                UUPS upgradeable proxy
+    --transparent         Transparent upgradeable proxy
+    --no-proxy            Non-upgradeable contracts (default)
 
   ${chalk.yellow('TypeScript Features:')}
     --aliases             Enable path aliases (default for TS)
@@ -302,6 +393,12 @@ ${chalk.bold('EXAMPLES:')}
 
   ${chalk.gray('# WebSocket server with MongoDB')}
   ${chalk.cyan('npx create-churn@latest realtime-app --ws --mongoose --mongodb --session --vitest')}
+
+  ${chalk.gray('# Solidity smart contracts with Hardhat')}
+  ${chalk.cyan('npx create-churn@latest my-contracts --solidity --hardhat --token --uups')}
+
+  ${chalk.gray('# NFT project with Foundry')}
+  ${chalk.cyan('npx create-churn@latest nft-project --solidity --foundry --nft --erc721 --no-proxy')}
 
 ${chalk.bold('DOCUMENTATION:')}
   https://github.com/Basharkhan7776/Churn#readme

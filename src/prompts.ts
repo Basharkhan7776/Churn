@@ -25,7 +25,52 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       message: 'Which language would you like to use?',
       choices: [
         { title: 'TypeScript (recommended)', value: 'ts' },
-        { title: 'JavaScript', value: 'js' }
+        { title: 'JavaScript', value: 'js' },
+        { title: 'Solidity (Smart Contracts)', value: 'solidity' }
+      ],
+      initial: 0
+    },
+    {
+      type: (prev: string) => prev === 'solidity' ? 'select' : null,
+      name: 'evmFramework',
+      message: 'Which EVM framework would you like to use?',
+      choices: [
+        { title: 'Hardhat (recommended)', value: 'hardhat' },
+        { title: 'Foundry (Rust-based, fast)', value: 'foundry' },
+        { title: 'None (vanilla Solidity)', value: 'none' }
+      ],
+      initial: 0
+    },
+    {
+      type: (prev: any, values: any) => values.language === 'solidity' ? 'select' : null,
+      name: 'contractType',
+      message: 'What type of contracts would you like to create?',
+      choices: [
+        { title: 'Token (ERC20)', value: 'token' },
+        { title: 'NFT (ERC721/ERC1155)', value: 'nft' },
+        { title: 'Both (Token + NFT)', value: 'both' },
+        { title: 'None (custom contracts)', value: 'none' }
+      ],
+      initial: 0
+    },
+    {
+      type: (prev: any, values: any) => values.language === 'solidity' && (values.contractType === 'nft' || values.contractType === 'both') ? 'select' : null,
+      name: 'tokenStandard',
+      message: 'Which NFT standard would you like to use?',
+      choices: [
+        { title: 'ERC721 (standard NFT)', value: 'erc721' },
+        { title: 'ERC1155 (multi-token)', value: 'erc1155' }
+      ],
+      initial: 0
+    },
+    {
+      type: (prev: any, values: any) => values.language === 'solidity' && values.contractType !== 'none' ? 'select' : null,
+      name: 'proxy',
+      message: 'Would you like to use upgradeable contracts (proxy pattern)?',
+      choices: [
+        { title: 'None (non-upgradeable)', value: 'none' },
+        { title: 'UUPS (recommended)', value: 'uups' },
+        { title: 'Transparent Proxy', value: 'transparent' }
       ],
       initial: 0
     },
@@ -42,7 +87,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 0
     },
     {
-      type: 'select',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'select' : null,
       name: 'protocol',
       message: 'Which protocol would you like to use?',
       choices: [
@@ -60,7 +105,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       inactive: 'No'
     },
     {
-      type: 'select',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'select' : null,
       name: 'orm',
       message: 'Which ORM/ODM would you like to use?',
       choices: [
@@ -94,7 +139,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 0
     },
     {
-      type: 'toggle',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'toggle' : null,
       name: 'aliases',
       message: 'Would you like to use path aliases?',
       initial: true,
@@ -102,7 +147,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       inactive: 'No'
     },
     {
-      type: 'select',
+      type: (prev: any, values: any) => values.language !== 'solidity' ? 'select' : null,
       name: 'auth',
       message: 'Which authentication would you like to use?',
       choices: [
@@ -174,6 +219,11 @@ export async function promptUser(): Promise<ProjectOptions | null> {
     linting: response.linting,
     docker: response.docker,
     cicd: response.cicd,
-    targetDir
+    targetDir,
+    // EVM-specific options
+    evmFramework: response.evmFramework,
+    contractType: response.contractType,
+    tokenStandard: response.tokenStandard,
+    proxy: response.proxy
   };
 } 
