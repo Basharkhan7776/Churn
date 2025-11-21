@@ -14,9 +14,9 @@ describe('scaffold.ts', () => {
 
     // Note: Full integration tests for scaffoldProject would require:
     // 1. Setting up temporary directories
-    // 2. Mocking file system operations
+    // 2. Running package manager install (slow)
     // 3. Cleaning up after tests
     // These tests verify the function exists and has the correct signature
-    // For full testing, consider integration tests in a separate test suite
+    // For full testing, run: bun run build && node dist/index.js test-project --solidity --hardhat --token
   });
 });

@@ -62,6 +62,48 @@ describe('flags.ts', () => {
       expect(result?.language).toBe('js');
     });
 
+    it('should parse Solidity flag', () => {
+      expect(parseFlags(['node', 'script.js', '--solidity'])?.language).toBe('solidity');
+      expect(parseFlags(['node', 'script.js', '--sol'])?.language).toBe('solidity');
+    });
+
+    it('should parse EVM framework flags', () => {
+      expect(parseFlags(['node', 'script.js', '--hardhat'])?.evmFramework).toBe('hardhat');
+      expect(parseFlags(['node', 'script.js', '--foundry'])?.evmFramework).toBe('foundry');
+      expect(parseFlags(['node', 'script.js', '--no-framework'])?.evmFramework).toBe('none');
+    });
+
+    it('should parse contract type flags', () => {
+      expect(parseFlags(['node', 'script.js', '--token'])?.contractType).toBe('token');
+      expect(parseFlags(['node', 'script.js', '--nft'])?.contractType).toBe('nft');
+      expect(parseFlags(['node', 'script.js', '--both-contracts'])?.contractType).toBe('both');
+      expect(parseFlags(['node', 'script.js', '--no-contracts'])?.contractType).toBe('none');
+    });
+
+    it('should parse token standard flags', () => {
+      expect(parseFlags(['node', 'script.js', '--erc20'])?.tokenStandard).toBe('erc20');
+      expect(parseFlags(['node', 'script.js', '--erc721'])?.tokenStandard).toBe('erc721');
+      expect(parseFlags(['node', 'script.js', '--erc1155'])?.tokenStandard).toBe('erc1155');
+    });
+
+    it('should parse proxy pattern flags', () => {
+      expect(parseFlags(['node', 'script.js', '--uups'])?.proxy).toBe('uups');
+      expect(parseFlags(['node', 'script.js', '--transparent'])?.proxy).toBe('transparent');
+      expect(parseFlags(['node', 'script.js', '--no-proxy'])?.proxy).toBe('none');
+    });
+
+    it('should parse multiple Solidity flags together', () => {
+      const args = ['node', 'script.js', 'my-token', '--solidity', '--hardhat', '--token', '--erc20', '--uups', '--npm'];
+      const result = parseFlags(args);
+      expect(result?.projectName).toBe('my-token');
+      expect(result?.language).toBe('solidity');
+      expect(result?.evmFramework).toBe('hardhat');
+      expect(result?.contractType).toBe('token');
+      expect(result?.tokenStandard).toBe('erc20');
+      expect(result?.proxy).toBe('uups');
+      expect(result?.packageManager).toBe('npm');
+    });
+
     it('should parse package manager flags', () => {
       expect(parseFlags(['node', 'script.js', '--bun'])?.packageManager).toBe('bun');
       expect(parseFlags(['node', 'script.js', '--npm'])?.packageManager).toBe('npm');
@@ -244,6 +286,68 @@ describe('flags.ts', () => {
 
       const options2 = convertFlagsToOptions({});
       expect(options2.targetDir).toBe('./my-churn-app');
+    });
+
+    it('should handle Solidity language with EVM options', () => {
+      const flags = {
+        projectName: 'my-token',
+        language: 'solidity' as const,
+        packageManager: 'npm' as const,
+        evmFramework: 'hardhat' as const,
+        contractType: 'token' as const,
+        tokenStandard: 'erc20' as const,
+        proxy: 'uups' as const,
+      };
+
+      const options = convertFlagsToOptions(flags);
+      expect(options.projectName).toBe('my-token');
+      expect(options.language).toBe('solidity');
+      expect(options.packageManager).toBe('npm');
+      expect(options.evmFramework).toBe('hardhat');
+      expect(options.contractType).toBe('token');
+      expect(options.tokenStandard).toBe('erc20');
+      expect(options.proxy).toBe('uups');
+      expect(options.targetDir).toBe('./my-token');
+    });
+
+    it('should set default EVM options for Solidity projects', () => {
+      const flags = {
+        language: 'solidity' as const,
+      };
+
+      const options = convertFlagsToOptions(flags);
+      expect(options.language).toBe('solidity');
+      expect(options.evmFramework).toBe('hardhat');
+      expect(options.contractType).toBe('token');
+      expect(options.tokenStandard).toBe('erc20');
+      expect(options.proxy).toBe('none');
+    });
+
+    it('should set tokenStandard to erc721 when contractType is nft', () => {
+      const flags = {
+        language: 'solidity' as const,
+        contractType: 'nft' as const,
+      };
+
+      const options = convertFlagsToOptions(flags);
+      expect(options.contractType).toBe('nft');
+      expect(options.tokenStandard).toBe('erc721');
+    });
+
+    it('should handle Foundry framework with NFT contract', () => {
+      const flags = {
+        language: 'solidity' as const,
+        evmFramework: 'foundry' as const,
+        contractType: 'nft' as const,
+        tokenStandard: 'erc1155' as const,
+        proxy: 'transparent' as const,
+      };
+
+      const options = convertFlagsToOptions(flags);
+      expect(options.evmFramework).toBe('foundry');
+      expect(options.contractType).toBe('nft');
+      expect(options.tokenStandard).toBe('erc1155');
+      expect(options.proxy).toBe('transparent');
     });
   });
 });

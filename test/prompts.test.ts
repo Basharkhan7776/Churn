@@ -10,9 +10,9 @@ describe('prompts.ts', () => {
       expect(typeof promptUser).toBe('function');
     });
 
-    it('should return a promise', () => {
-      // Check if the function returns a promise by checking the return type
-      expect(promptUser.constructor.name).toBe('Function');
+    it('should be an async function', () => {
+      // Check if the function is async by checking the constructor name
+      expect(promptUser.constructor.name).toBe('AsyncFunction');
     });
 
     // Note: To fully test this function, we would need to mock the 'prompts' library
