@@ -409,17 +409,17 @@ async function generateSolidityProject(options: ProjectOptions): Promise<void> {
       // Install Foundry dependencies
       console.log(chalk.blue('[*] Installing Foundry dependencies...'));
       try {
-        execSync('forge install OpenZeppelin/openzeppelin-contracts --no-commit', {
+        execSync('forge install OpenZeppelin/openzeppelin-contracts --no-git', {
           stdio: 'inherit',
           cwd: path.resolve(targetDir)
         });
         if (options.proxy !== 'none') {
-          execSync('forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-commit', {
+          execSync('forge install OpenZeppelin/openzeppelin-contracts-upgradeable --no-git', {
             stdio: 'inherit',
             cwd: path.resolve(targetDir)
           });
         }
-        execSync('forge install foundry-rs/forge-std --no-commit', {
+        execSync('forge install foundry-rs/forge-std --no-git', {
           stdio: 'inherit',
           cwd: path.resolve(targetDir)
         });
