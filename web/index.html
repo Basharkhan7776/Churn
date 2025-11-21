@@ -3,14 +3,25 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>
-            Churn CLI - Scaffold production-ready backends with one command
-        </title>
+
+        <!-- Primary Meta Tags -->
+        <title>Churn CLI - Scaffold Production-Ready Backends & Smart Contracts</title>
+        <meta name="title" content="Churn CLI - Scaffold Production-Ready Backends & Smart Contracts" />
         <meta
             name="description"
-            content="Create production-ready backend projects with multiple ORMs, authentication, Docker setup, and more using a single CLI command."
+            content="Create production-ready backend projects and Solidity smart contracts with one command. Support for Hardhat, Foundry, multiple ORMs, authentication, Docker, and more."
         />
+        <meta name="keywords" content="CLI, scaffolding, backend, Node.js, TypeScript, Solidity, smart contracts, Hardhat, Foundry, ERC20, ERC721, Prisma, Drizzle, Express, Hono, Docker, authentication" />
         <meta name="author" content="Bashar Khan" />
+        <meta name="robots" content="index, follow" />
+
+        <!-- Canonical URL -->
+        <link rel="canonical" href="https://churn.basharkhan.in" />
+
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+        <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -18,17 +29,58 @@
             rel="stylesheet"
         />
 
-        <meta
-            property="og:title"
-            content="Churn CLI - Backend Scaffolding Tool"
-        />
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://churn.basharkhan.in" />
+        <meta property="og:title" content="Churn CLI - Scaffold Production-Ready Backends & Smart Contracts" />
         <meta
             property="og:description"
-            content="Scaffold production-ready backends with one command. Multiple ORMs, authentication, Docker, and more."
+            content="Create production-ready backend projects and Solidity smart contracts with one command. Support for Hardhat, Foundry, multiple ORMs, authentication, Docker, and more."
         />
-        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Churn CLI" />
 
+        <!-- Twitter -->
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content="https://churn.basharkhan.in" />
+        <meta name="twitter:title" content="Churn CLI - Scaffold Production-Ready Backends & Smart Contracts" />
+        <meta
+            name="twitter:description"
+            content="Create production-ready backend projects and Solidity smart contracts with one command. Support for Hardhat, Foundry, multiple ORMs, authentication, Docker, and more."
+        />
+
+        <!-- Structured Data (JSON-LD) -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "Churn CLI",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "Windows, macOS, Linux",
+            "description": "A CLI tool to scaffold production-ready backend projects and Solidity smart contracts with one command.",
+            "url": "https://churn.basharkhan.in",
+            "author": {
+                "@type": "Person",
+                "name": "Bashar Khan"
+            },
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "softwareVersion": "1.1.2",
+            "downloadUrl": "https://www.npmjs.com/package/create-churn"
+        }
+        </script>
+
+        <!-- Theme initialization (prevent flash) -->
+        <script>
+            (function() {
+                const theme = localStorage.getItem('churn-theme');
+                if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            })();
+        </script>
     </head>
 
     <body>
