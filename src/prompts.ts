@@ -119,7 +119,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 1
     },
     {
-      type: (prev: string) => prev !== 'none' && prev !== 'mongoose' ? 'select' : null,
+      type: (prev: string, values: any) => values.language !== 'solidity' && prev !== 'none' && prev !== 'mongoose' ? 'select' : null,
       name: 'database',
       message: 'Which database would you like to use?',
       choices: [
@@ -130,7 +130,7 @@ export async function promptUser(): Promise<ProjectOptions | null> {
       initial: 0
     },
     {
-      type: (prev: any, values: any) => values.orm === 'mongoose' ? 'select' : null,
+      type: (prev: any, values: any) => values.language !== 'solidity' && values.orm === 'mongoose' ? 'select' : null,
       name: 'database',
       message: 'MongoDB is selected for Mongoose',
       choices: [
