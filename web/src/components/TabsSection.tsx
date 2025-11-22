@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const commands = {
-  npm: "npm create churn@latest my-api --prisma --jwt --docker",
-  pnpm: "pnpm create churn@latest my-api --prisma --jwt --docker",
-  yarn: "yarn create churn my-api --prisma --jwt --docker",
-  bun: "bun create churn@latest my-api --prisma --jwt --docker",
+  npm: "npm create churn@latest",
+  pnpm: "pnpm create churn@latest",
+  yarn: "yarn create churn",
+  bun: "bun create churn@latest",
 };
 
 export function TabsSection() {

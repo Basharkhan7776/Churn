@@ -48,16 +48,16 @@ const features = [
 ];
 
 const codeSnippet = `# Create a backend API
-npx create-churn@latest my-api \\
-  --prisma --jwt --docker --postgres
+npx create-churn@latest
+
+# Or with flags
+npx create-churn@latest --prisma --jwt --docker
 
 # Create smart contracts
-npx create-churn@latest my-token \\
-  --solidity --hardhat --token --uups
+npx create-churn@latest --solidity --hardhat --token
 
 # Navigate and start
-cd my-api
-npm run dev`;
+cd your-project && npm run dev`;
 
 export function QuickStart() {
   return (
