@@ -70,9 +70,16 @@ export function Header() {
             </SheetContent>
           </Sheet>
 
-          <div className="font-mono font-bold text-sm tracking-tight">
-            CHURN CLI
-          </div>
+          <a href="/" className="flex items-center gap-2">
+            <img
+              src="/logo.png"
+              alt="Churn CLI Logo"
+              className="h-8 w-8 rounded"
+            />
+            <span className="font-mono font-bold text-sm tracking-tight hidden sm:inline">
+              CHURN CLI
+            </span>
+          </a>
           <div className="hidden sm:block">
             <PackageManagerTabs />
           </div>
