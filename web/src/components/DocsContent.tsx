@@ -55,7 +55,7 @@ export function DocsContent() {
           Create production-ready backend projects or smart contracts with one command. Choose your ORM, database, auth strategy, or Solidity framework (Hardhat/Foundry) for EVM development.
         </p>
 
-        <CommandBlock command={`${baseCommand} my-api`} />
+        <CommandBlock command={baseCommand} />
 
         <h1 id="features" className="text-4xl font-bold mt-16 mb-6">Features</h1>
         
@@ -92,7 +92,7 @@ export function DocsContent() {
         <p className="text-muted-foreground">
           Pass flags directly to skip prompts:
         </p>
-        <CommandBlock command={`${baseCommand} my-api --prisma --jwt --docker --postgres`} />
+        <CommandBlock command={`${baseCommand} --prisma --jwt --docker --postgres`} />
 
         <h1 id="flags" className="text-4xl font-bold mt-16 mb-6">CLI Flags</h1>
 
@@ -175,27 +175,27 @@ export function DocsContent() {
         <div className="space-y-4 not-prose">
           <div>
             <h3 className="text-sm font-semibold mb-2">Full-stack API with Prisma & JWT</h3>
-            <CommandBlock command={`${baseCommand} my-api --prisma --jwt --docker --postgres`} />
+            <CommandBlock command={`${baseCommand} --prisma --jwt --docker --postgres`} />
           </div>
           <div>
             <h3 className="text-sm font-semibold mb-2">Minimal MongoDB API</h3>
-            <CommandBlock command={`${baseCommand} my-api --mongoose --mongodb`} />
+            <CommandBlock command={`${baseCommand} --mongoose --mongodb`} />
           </div>
           <div>
             <h3 className="text-sm font-semibold mb-2">TypeORM with OAuth</h3>
-            <CommandBlock command={`${baseCommand} my-api --typeorm --oauth --mysql --docker`} />
+            <CommandBlock command={`${baseCommand} --typeorm --oauth --mysql --docker`} />
           </div>
           <div>
             <h3 className="text-sm font-semibold mb-2">ERC20 Token with Hardhat & UUPS Proxy</h3>
-            <CommandBlock command={`${baseCommand} my-token --solidity --hardhat --token --uups`} />
+            <CommandBlock command={`${baseCommand} --solidity --hardhat --token --uups`} />
           </div>
           <div>
             <h3 className="text-sm font-semibold mb-2">NFT Collection with Foundry</h3>
-            <CommandBlock command={`${baseCommand} nft-project --solidity --foundry --nft --erc721 --no-proxy`} />
+            <CommandBlock command={`${baseCommand} --solidity --foundry --nft --erc721`} />
           </div>
           <div>
             <h3 className="text-sm font-semibold mb-2">Token + NFT Project with Hardhat</h3>
-            <CommandBlock command={`${baseCommand} my-contracts --solidity --hardhat --both-contracts --erc1155`} />
+            <CommandBlock command={`${baseCommand} --solidity --hardhat --both-contracts --erc1155`} />
           </div>
         </div>
 
@@ -250,7 +250,7 @@ export function DocsContent() {
         </p>
         
         <div className="space-y-3 not-prose">
-          <CommandBlock command="cd my-api" />
+          <CommandBlock command="cd your-project" />
           <CommandBlock command={`${packageManager} install`} />
           <CommandBlock command={`${packageManager} run dev`} />
         </div>
